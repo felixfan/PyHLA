@@ -309,5 +309,94 @@ def writeAssocRaw(assoc, alleles, outfile, permP=None, permN=None, permNA=None):
 	fp.write('\n')
 	fp.close()
 ###########################################################################
+def printAssocScore(assoc, alleles, permP=None, permN=None, permNA=None):
+	for h in ('Gene', 'U'):
+		print "%10s" % h,
+	if permP is not None:
+		for h in ('P_perm', 'PermN', 'permNA'):
+			print "%10s" % h,
+	print
+	for a in assoc:
+		print "%10s" % a,
+		print "%10.4f" % assoc[a],
+		if permP is None:
+			print
+		else:
+			if permP[a] > 0.001:
+				print "%10.4f" % permP[a],
+			else:
+				print "%10.2e" % permP[a],
+			print "%10s" % permN[a],
+			print "%10s" % permNA[a]
+	### alleles
+	print '-----------------------------------------------------------------------------'
+	print 'Alleles were used:'
+	print '-----------------------------------------------------------------------------'
+	g = ''
+	i = 0
+	for a in sorted(alleles):
+		if g == '':
+			g = a.split('*')[0]
+			print "%20s" % a,
+			i +=1
+		elif g != a.split('*')[0]:
+			g = a.split('*')[0]
+			print
+			print 
+			print "%20s" % a,
+			i = 1
+		else:
+			print "%20s" % a,
+			i += 1
+			if i % 5 == 0:
+				print
+				i = 0
+	print
+def writeAssocScore(assoc, alleles, outfile, permP=None, permN=None, permNA=None):
+	fp = open(outfile, 'w')
+	for h in ('Gene', 'U'):
+		fp.write("%12s" % h)
+	if permP is not None:
+		for h in ('P_perm', 'PermN', 'permNA'):
+			fp.write("%12s" % h)
+	fp.write('\n')
+	for a in assoc:
+		fp.write("%12s" % a)
+		fp.write("%12.4f" % assoc[a])
+		if permP is None:
+			fp.write('\n')
+		else:
+			if permP[a] > 0.001:
+				fp.write("%12.4f" % permP[a])
+			else:
+				fp.write("%12.2e" % permP[a])
+			fp.write("%12d" % permN[a])
+			fp.write("%12d\n" % permNA[a])
+	### alleles
+	fp.write('-----------------------------------------------------------------------------\n')
+	fp.write('Alleles were used:\n')
+	fp.write('-----------------------------------------------------------------------------\n')
+	g = ''
+	i = 0
+	for a in sorted(alleles):
+		if g == '':
+			g = a.split('*')[0]
+			fp.write("%20s" % a)
+			i +=1
+		elif g != a.split('*')[0]:
+			g = a.split('*')[0]
+			fp.write('\n\n')
+			fp.write("%20s" % a)
+			i = 1
+		else:
+			fp.write("%20s" % a)
+			i += 1
+			if i % 5 == 0:
+				fp.write('\n')
+				i = 0
+	fp.write('\n')
+	fp.close()
+###########################################################################
+
 
 ###########################################################################

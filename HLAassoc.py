@@ -279,8 +279,9 @@ def assocRaw(infile, digit, freq, exclude=None, perm=None, seed=None):
 					for a in case9:
 						if a in ctrl9:
 							if a.startswith(g):
-								n1.append(case9[a])
-								n2.append(ctrl9[a])
+								if a in usedAllele:
+									n1.append(case9[a])
+									n2.append(ctrl9[a])
 
 					data = [n1, n2]
 					chi2, p, dof, expected = scipy.stats.chi2_contingency(data)
@@ -308,48 +309,98 @@ def assocRaw(infile, digit, freq, exclude=None, perm=None, seed=None):
 				else:
 					permP[a] = 1.0 * (permN[a] + 1) / (perm + 1 - permNA[a])
 		return assoc, usedAllele, permP, permN, permNA, permNL
-def assocScoreU(caseAlleles, ctrlAlleles, np, nc, freq, test):
+def assocScoreU(infile, digit, freq, exclude=None, perm=None, seed=None):
 	'''
 	Association Analysis (2 x m)
 	Score test
 	return score test U
 	'''
+	caseAlleles, ctrlAlleles, np, nc, nn = HLAcount.allelicCount(infile, digit)
+	alleleFreq, alleles = HLAcount.hlaFreq(caseAlleles, ctrlAlleles, np, nc, nn)
 	assoc = {}
+	usedAllele = []
+
+	excludeAlleles =[]
+	if exclude is not None:
+		ef = open(exclude)
+		for line in ef:
+			line = line.strip()
+			excludeAlleles.append(line)
+		ef.close()
+
 	### genes
-	gene = {}  # get all genes name
-	for a in caseAlleles:
-		temp = a.split('*')
-		gene[temp[0]] = 1
+	gene = []  # get all genes name
+	for a in np:
+		if a in nc:
+			gene.append(a)
+
 	for g in gene:
-		### counts
-		case = {}
-		ctrl = {}
-		for a in caseAlleles:
-			if a.startswith(g):
-				case[a] = caseAlleles[a]
-		for a in ctrlAlleles:
-			if a.startswith(g):
-				ctrl[a] = ctrlAlleles[a]
-		### freq
-		freqCase = {}
-		freqCtrl = {}
-		freqAll = {}
-		n1 = 0
-		n2 = 0
-		for a in case:
-			freqCase[a] = 1.0 * case[a] / np[g]
-		for a in ctrl:
-			freqCtrl[a] = 1.0 * ctrl[a] / nc[g]
-			if a in case:
-				freqAll[a] = 1.0 * (case[a] + ctrl[a]) / (np[g] + nc[g])
-		### score test U
-		n1 = np[g]
 		u = 0
-		for a in freqAll:
-			# if freqCase[a] > freq or freqCtrl[a] > freq:
-			if freqAll[a] > freq:
-				u = u + (case[a] - n1 * freqAll[a]) ** 2 / freqAll[a] - (case[a] - n1 * freqAll[a]) / freqAll[a]
+		n1 = np[g]
+		for a in caseAlleles:
+			if a in ctrlAlleles:
+				if a.startswith(g):
+					if alleleFreq[a][2] > freq:
+						usedAllele.append(a)
+						u = u + (caseAlleles[a] - n1 * alleleFreq[a][2]) ** 2 / alleleFreq[a][2] - (caseAlleles[a] - n1 * alleleFreq[a][2]) / alleleFreq[a][2]
 		if not isinstance(u, float):
 			u = 'NA'
 		assoc[g] = u
-	return assoc
+
+	if perm is None:
+		return assoc, usedAllele
+	else:
+		random.seed(seed)
+		permP = {}       # perm p value
+		permN = {}      # perm p < orig p
+		permNL = {}    # perm p > orig p
+		permNA = {}    # perm NA
+		for a in assoc:
+			permNA[a] = 0
+			permNL[a] = 0
+			permN[a] = 0
+		if perm > 10:
+			pf = perm / 10
+		else:
+			pf = 2
+		pn = 0   # effect perm number
+		while True:
+			case9, ctrl9, np9, nc9, nn9 = HLAcount.allelicCount(infile,digit, True)
+			alleleFreq9, alleles9 = HLAcount.hlaFreq(caseAlleles, ctrlAlleles, np, nc, nn)
+			ca = []   # current alleles
+			for a in case9:
+				if a in ctrl9:
+					ca.append(a)
+			if set(usedAllele) <= set(ca):  # current alleles contain used allele
+	        		for g in gene:
+					u = 0
+					n1 = np[g]
+					for a in case9:
+						if a in ctrl9:
+							if a.startswith(g):
+								if a in usedAllele:
+									u = u + (case9[a] - n1 * alleleFreq9[a][2]) ** 2 / alleleFreq9[a][2] - (case9[a] - n1 * alleleFreq9[a][2]) / alleleFreq9[a][2]
+					if not isinstance(u, float):
+						permNA[g] += 1
+					else:
+						if assoc[g] == 'NA':
+							permNA[g] += 1
+						else:
+							if u > assoc[g]:
+								permN[g] += 1
+							else:
+								permNL[g] += 1
+				pn += 1
+				if pn % pf == 1:
+					print 'permutation {}/{} ...'.format(pn, perm)
+			if pn == perm:
+				break
+		for a in assoc:
+			if assoc[a] == 'NA':
+				permP[a] = 'NA'
+			else:
+				if permNA[a] == perm:
+					permP[a] = 'NA'
+				else:
+					permP[a] = 1.0 * (permN[a] + 1) / (perm + 1 - permNA[a])
+		return assoc, usedAllele, permP, permN, permNA, permNL

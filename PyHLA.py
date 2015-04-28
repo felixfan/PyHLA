@@ -91,6 +91,19 @@ elif ASSOC:
 			if PRINT:
 				HLAIO.printAssocRaw(assoc, alleles, permP, permN, permNA)
 			HLAIO.writeAssocRaw(assoc, alleles, OUTFILE, permP, permN, permNA)
+	elif TEST == 'score':
+		if PERM is None:
+			assoc, alleles = HLAassoc.assocScoreU(INFILE, DIGIT, FREQ,EXCLUDE, PERM, SEED)
+			if PRINT:
+				HLAIO.printAssocScore(assoc, alleles)
+			HLAIO.writeAssocScore(assoc, alleles, OUTFILE)
+		else:
+			assoc, alleles, permP, permN, permNA, permNL = HLAassoc.assocScoreU(INFILE, DIGIT, FREQ,EXCLUDE, PERM, SEED)
+			if PRINT:
+				HLAIO.printAssocScore(assoc, alleles, permP, permN, permNA)
+			HLAIO.writeAssocScore(assoc, alleles, OUTFILE, permP, permN, permNA)
+	else:
+		pass
 elif ANNOT:
 	pass
 else:
