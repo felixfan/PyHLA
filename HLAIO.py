@@ -98,4 +98,118 @@ def writeSummaryQuant(alleles, genes, n, outfile):
 		fp.write("%20s" % allele)
 		fp.write("%12d" % alleles[allele])
 		fp.write("%12.4f\n" % (1.0 * alleles[allele] / genes[allele.split('*')[0]]))
+	fp.close()
+###########################################################################
+def printAssocChiFisher(assoc, test, permP=None, permN=None, permNA=None):
+	print "%20s" % 'Allele',
+	for a in ("A_case","B_case","A_ctrl","B_ctrl","F_case","F_ctrl","Freq"):
+		print "%8s" % a,
+	if test == 'chisq':
+		print "%10s" % 'P_Chisq',
+		print "%8s" % 'Chisq',
+		print "%4s" % 'DF',
+	else:
+		print "%10s" % 'P_FET',
+	for a in ("OR","L95","U95"):
+		print "%6s" % a,
+	if permP is None:
+		print "%10s" % 'P_adj'
+	else:
+		print "%10s" % 'P_adj',
+		print "%10s" % 'P_perm',
+		print "%8s" % 'PermN',
+		print "%8s" % 'permNA'
+	for a in sorted(assoc.keys()):
+		print "%20s" % a,
+		for i in range(4):
+			print "%8d" % assoc[a][i],
+		for i in range(4,7):
+			print "%8.4f" % assoc[a][i],
+		if assoc[a][7] > 0.001:
+			print "%10.4f" % assoc[a][7],
+		else:
+			print "%10.2e" % assoc[a][7],
+		if test =='chisq':
+			print "%8.4f" % assoc[a][8],
+			print "%4d" % assoc[a][9],
+			for i in range(10, 13):
+				print "%6.4f" % assoc[a][i],
+			if assoc[a][13] > 0.001:
+				print "%10.4f" % assoc[a][13],
+			else:
+				print "%10.2e" % assoc[a][13],
+		else:
+			for i in range(8, 11):
+				print "%6.4f" % assoc[a][i],
+			if assoc[a][11] > 0.001:
+				print "%10.4f" % assoc[a][11],
+			else:
+				print "%10.2e" % assoc[a][11],
+		if permP is None:
+			print
+		else:
+			if permP[a] > 0.001:
+				print "%10.4f" % permP[a],
+			else:
+				print "%10.2e" % permP[a],
+			print "%8d" % permN[a],
+			print "%8d" % permNA[a]
+def writeAssocChiFisher(assoc, test, outfile, permP=None, permN=None, permNA=None):
+	fp = open(outfile, 'w')
+	fp.write("%20s" % 'Allele')
+	for a in ("A_case","B_case","A_ctrl","B_ctrl","F_case","F_ctrl","Freq"):
+		fp.write("%8s" % a)
+	if test == 'chisq':
+		fp.write("%10s" % 'P_Chisq')
+		fp.write("%8s" % 'Chisq')
+		fp.write("%4s" % 'DF')
+	else:
+		fp.write("%10s" % 'P_FET')
+	for a in ("OR","L95","U95"):
+		fp.write("%6s" % a)
+	if permP is None:
+		fp.write("%10s\n" % 'P_adj')
+	else:
+		fp.write("%10s" % 'P_adj')
+		fp.write("%10s" % 'P_perm')
+		fp.write("%8s" % 'PermN')
+		fp.write("%8s\n" % 'permNA')
+	for a in sorted(assoc.keys()):
+		fp.write("%20s" % a)
+		for i in range(4):
+			fp.write("%8d" % assoc[a][i])
+		for i in range(4,7):
+			fp.write("%8.4f" % assoc[a][i])
+		if assoc[a][7] > 0.001:
+			fp.write("%10.4f" % assoc[a][7])
+		else:
+			fp.write("%10.2e" % assoc[a][7])
+		if test =='chisq':
+			fp.write("%8.4f" % assoc[a][8])
+			fp.write("%4d" % assoc[a][9])
+			for i in range(10, 13):
+				fp.write("%6.4f" % assoc[a][i])
+			if assoc[a][13] > 0.001:
+				fp.write("%10.4f" % assoc[a][13])
+			else:
+				fp.write("%10.2e" % assoc[a][13])
+		else:
+			for i in range(8, 11):
+				fp.write("%6.4f" % assoc[a][i])
+			if assoc[a][11] > 0.001:
+				fp.write("%10.4f" % assoc[a][11])
+			else:
+				fp.write("%10.2e" % assoc[a][11])
+		if permP is None:
+			fp.write('\n')
+		else:
+			if permP[a] > 0.001:
+				fp.write("%10.4f" % permP[a])
+			else:
+				fp.write("%10.2e" % permP[a])
+			fp.write("%8d" % permN[a])
+			fp.write("%8d\n" % permNA[a])
+	fp.close()
+###########################################################################
+
 ###########################################################################

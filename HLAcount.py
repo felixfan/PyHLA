@@ -11,7 +11,6 @@ def allelicCount(infile, digits, perm=False):
 	control = {}
 	np = {}         # total non-NA alleles for each gene
 	nc = {}
-
 	f = open(infile) # read all phenotype
 	pht = []
 	for line in f:
@@ -22,7 +21,6 @@ def allelicCount(infile, digits, perm=False):
 		random.shuffle(pht)
 	l = 0     # line index
 	nn = len(pht)
-
 	f = open(infile)
 	for line in f:
 		line = line.rstrip()
@@ -47,25 +45,24 @@ def allelicCount(infile, digits, perm=False):
 						sys.exit("--digits 2 requires at least 2 digits resolution genotype!")
 					a4d1 = names1[0]
 					a4d2 = names2[0]
-
 				if pht[l] == "2":
 					if a4d1.split('*')[0] in np:
 						np[a4d1.split('*')[0]] += 1
 					else:
 						np[a4d1.split('*')[0]] = 1
-
 					if a4d1 in case:
 						case[a4d1] += 1
 					else:
 						case[a4d1] = 1
-
-					if a4d1 != a4d2:
-						if a4d2 in case:
-							case[a4d2] += 1
-						else:
-							case[a4d2] = 1
-						
-
+					##
+					if a4d2.split("*")[0] in np:
+						np[a4d2.split("*")[0]] += 1
+					else:
+						np[a4d2.split("*")[0]] = 1
+					if a4d2 in case:
+						case[a4d2] += 1
+					else:
+						case[a4d2] = 1
 				elif pht[l] == "1":
 					if a4d1.split('*')[0] in nc:
 						nc[a4d1.split('*')[0]] += 1
@@ -76,16 +73,18 @@ def allelicCount(infile, digits, perm=False):
 						control[a4d1] += 1
 					else:
 						control[a4d1] = 1
-
-					if a4d1 != a4d2:
-						if a4d2 in control:
-							control[a4d2] += 1
-						else:
-							control[a4d2] = 1
+					##
+					if a4d2.split("*")[0] in nc:
+						nc[a4d2.split("*")[0]] += 1
+					else:
+						nc[a4d2.split("*")[0]] = 1
+					if a4d2 in control:
+						control[a4d2] += 1
+					else:
+						control[a4d2] = 1
 		l += 1
 	f.close()
 	return case, control, np, nc, nn
-
 def domCount(infile, digits, perm=False):
 	'''
 	count all alleles
@@ -95,7 +94,6 @@ def domCount(infile, digits, perm=False):
 	control = {}
 	nc = {}
 	np = {}
-
 	f = open(infile) # read all phenotype
 	pht = []
 	for line in f:
@@ -106,7 +104,6 @@ def domCount(infile, digits, perm=False):
 		random.shuffle(pht)
 	l = 0     # line index
 	nn = len(pht)
-
 	f = open(infile)
 	for line in f:
 		line = line.rstrip()
@@ -131,37 +128,29 @@ def domCount(infile, digits, perm=False):
 						sys.exit("--digits 2 requires at least 2 digits resolution genotype!")
 					a4d1 = names1[0]
 					a4d2 = names2[0]
-
-
 				if pht[l] == "2":
 					if a4d1.split('*')[0] in np:
 						np[a4d1.split('*')[0]] += 1
 					else:
 						np[a4d1.split('*')[0]] = 1
-
 					if a4d1 in case:
 						case[a4d1] += 1
 					else:
 						case[a4d1] = 1
-
 					if a4d1 != a4d2:
 						if a4d2 in case:
 							case[a4d2] += 1
 						else:
 							case[a4d2] = 1
-						
-
 				elif pht[l] == "1":
 					if a4d1.split('*')[0] in nc:
 						nc[a4d1.split('*')[0]] += 1
 					else:
 						nc[a4d1.split('*')[0]] = 1
-
 					if a4d1 in control:
 						control[a4d1] += 1
 					else:
 						control[a4d1] = 1
-
 					if a4d1 != a4d2:
 						if a4d2 in control:
 							control[a4d2] += 1
@@ -170,7 +159,6 @@ def domCount(infile, digits, perm=False):
 		l += 1
 	f.close()
 	return case, control, np, nc, nn
-
 def recCount(infile, digits, perm=False):
 	'''
 	count all alleles
@@ -180,7 +168,6 @@ def recCount(infile, digits, perm=False):
 	control = {}
 	nc = {}
 	np = {}
-
 	f = open(infile) # read all phenotype
 	pht = []
 	for line in f:
@@ -191,7 +178,6 @@ def recCount(infile, digits, perm=False):
 		random.shuffle(pht)
 	l = 0     # line index
 	nn = len(pht)
-
 	f = open(infile)
 	for line in f:
 		line = line.rstrip()
@@ -216,26 +202,21 @@ def recCount(infile, digits, perm=False):
 						sys.exit("--digits 2 requires at least 2 digits resolution genotype!")
 					a4d1 = names1[0]
 					a4d2 = names2[0]
-
-
 				if pht[l] == "2":
 					if a4d1.split('*')[0] in np:
 						np[a4d1.split('*')[0]] += 1
 					else:
 						np[a4d1.split('*')[0]] = 1
-
 					if a4d1 == a4d2:
 						if a4d2 in case:
 							case[a4d2] += 1
 						else:
 							case[a4d2] = 1
-
 				elif pht[l] == "1":
 					if a4d1.split('*')[0] in nc:
 						nc[a4d1.split('*')[0]] += 1
 					else:
 						nc[a4d1.split('*')[0]] = 1
-
 					if a4d1 == a4d2:
 						if a4d2 in control:
 							control[a4d2] += 1
@@ -280,7 +261,6 @@ def alleleCount(infile, digits):
 	allelesN = {}
 	genesN = {}
 	N = 0
-
 	f = open(infile)
 	for line in f:
 		line = line.rstrip()
@@ -321,8 +301,7 @@ def alleleCount(infile, digits):
 				if a4d2 in allelesN:
 					allelesN[a4d2] += 1
 				else:
-					allelesN[a4d2] = 1
-					
+					allelesN[a4d2] = 1			
 	f.close()
 	return allelesN, genesN, N
 def quantTrait(infile):
