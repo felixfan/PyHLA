@@ -211,5 +211,103 @@ def writeAssocChiFisher(assoc, test, outfile, permP=None, permN=None, permNA=Non
 			fp.write("%8d\n" % permNA[a])
 	fp.close()
 ###########################################################################
+def printAssocRaw(assoc, alleles, permP=None, permN=None, permNA=None):
+	for h in ('Gene', 'Chisq',  'DF', 'P_raw'):
+		print "%10s" % h,
+	if permP is not None:
+		for h in ('P_perm', 'PermN', 'permNA'):
+			print "%10s" % h,
+	print
+	for a in assoc:
+		print "%10s" % a,
+		print "%10.4f" % assoc[a][0],
+		print "%10d" % assoc[a][1],
+		if assoc[a][2] > 0.001:
+			print "%10.4f" % assoc[a][2],
+		else:
+			print "%10.2e" % assoc[a][2],
+		if permP is None:
+			print
+		else:
+			if permP[a] > 0.001:
+				print "%10.4f" % permP[a],
+			else:
+				print "%10.2e" % permP[a],
+			print "%10d" % permN[a],
+			print "%10d" % permNA[a]
+	### alleles
+	print '-----------------------------------------------------------------------------'
+	print 'Alleles were used:'
+	print '-----------------------------------------------------------------------------'
+	g = ''
+	i = 0
+	for a in sorted(alleles):
+		if g == '':
+			g = a.split('*')[0]
+			print "%20s" % a,
+			i +=1
+		elif g != a.split('*')[0]:
+			g = a.split('*')[0]
+			print
+			print 
+			print "%20s" % a,
+			i = 1
+		else:
+			print "%20s" % a,
+			i += 1
+			if i % 5 == 0:
+				print
+				i = 0
+	print
+def writeAssocRaw(assoc, alleles, outfile, permP=None, permN=None, permNA=None):
+	fp = open(outfile, 'w')
+	for h in ('Gene', 'Chisq',  'DF', 'P_raw'):
+		fp.write("%10s" % h)
+	if permP is not None:
+		for h in ('P_perm', 'PermN', 'permNA'):
+			fp.write("%10s" % h)
+	fp.write('\n')
+	for a in assoc:
+		fp.write("%10s" % a)
+		fp.write("%10.4f" % assoc[a][0])
+		fp.write("%10d" % assoc[a][1])
+		if assoc[a][2] > 0.001:
+			fp.write("%10.4f" % assoc[a][2])
+		else:
+			fp.write("%10.2e" % assoc[a][2])
+		if permP is None:
+			fp.write('\n')
+		else:
+			if permP[a] > 0.001:
+				fp.write("%10.4f" % permP[a])
+			else:
+				fp.write("%10.2e" % permP[a])
+			fp.write("%10d" % permN[a])
+			fp.write("%10d\n" % permNA[a])
+	### alleles
+	fp.write('-----------------------------------------------------------------------------\n')
+	fp.write('Alleles were used:\n')
+	fp.write('-----------------------------------------------------------------------------\n')
+	g = ''
+	i = 0
+	for a in sorted(alleles):
+		if g == '':
+			g = a.split('*')[0]
+			fp.write("%20s" % a)
+			i +=1
+		elif g != a.split('*')[0]:
+			g = a.split('*')[0]
+			fp.write('\n\n')
+			fp.write("%20s" % a)
+			i = 1
+		else:
+			fp.write("%20s" % a)
+			i += 1
+			if i % 5 == 0:
+				fp.write('\n')
+				i = 0
+	fp.write('\n')
+	fp.close()
+###########################################################################
 
 ###########################################################################

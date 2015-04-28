@@ -7,7 +7,7 @@ import HLAIO
 
 ###################################################
 parser = argparse.ArgumentParser(description='Python for HLA analysis', prog="PyHLA.py")
-parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.2')
+parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.3')
 parser.add_argument('-V', '--print', help='print output to screen', action='store_true')
 parser.add_argument('-i', '--infile', help='input file', required=True, type=str)
 parser.add_argument('-o', '--out', help='output file', default='output.txt')
@@ -80,6 +80,17 @@ elif ASSOC:
 			if PRINT:
 				HLAIO.printAssocChiFisher(assoc, TEST, permP, permN, permNA)
 			HLAIO.writeAssocChiFisher(assoc, TEST, OUTFILE, permP, permN, permNA)
+	elif TEST == 'raw':
+		if PERM is None:
+			assoc, alleles = HLAassoc.assocRaw(INFILE, DIGIT, FREQ,EXCLUDE, PERM, SEED)
+			if PRINT:
+				HLAIO.printAssocRaw(assoc,alleles)
+			HLAIO.writeAssocRaw(assoc, alleles, OUTFILE)
+		else:
+			assoc, alleles, permP, permN, permNA, permNL = HLAassoc.assocRaw(INFILE, DIGIT, FREQ,EXCLUDE, PERM, SEED)
+			if PRINT:
+				HLAIO.printAssocRaw(assoc, alleles, permP, permN, permNA)
+			HLAIO.writeAssocRaw(assoc, alleles, OUTFILE, permP, permN, permNA)
 elif ANNOT:
 	pass
 else:
