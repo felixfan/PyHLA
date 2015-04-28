@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+
+import argparse
+import HLAcount
+#import HLAassoc
+import HLAIO
+
+###################################################
+parser = argparse.ArgumentParser(description='Python for HLA analysis', prog="PyHLA.py")
+parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.1')
+parser.add_argument('-V', '--print', help='print output to screen', action='store_true')
+parser.add_argument('-i', '--infile', help='input file', required=True, type=str)
+parser.add_argument('-o', '--out', help='output file', default='output.txt')
+parser.add_argument('-d', '--digits', help='digits to test, default 4', default=4, type=int, choices=[2,4,6])
+### summary
+parser.add_argument('-s', '--summary', help='data summary', action='store_true')
+### quality control
+parser.add_argument('-q', '--qc', help='quality control', action='store_true')
+### association analysis
+parser.add_argument('-a', '--assoc', help='association analysis', action='store_true')
+parser.add_argument('-m', '--model', help='genetic model, default allelic', default='allelic', type=str, choices=['allelic','dom','rec'])
+parser.add_argument('-t', '--test', help='statistical test method, default chisq', default='chisq', type=str, choices=['chisq','fisher','logistic','linear','raw','score'])
+parser.add_argument('-f', '--freq', help='minimal frequency, default 0.05', default=0.05, type=float)
+### annotation
+parser.add_argument('-A', '--annotation', help='annotation', action='store_true')
+###################################################
+args = vars(parser.parse_args())
+
+INFILE = args['infile']
+OUTFILE = args['out']
+DIGIT = args['digits']
+PRINT =  args['print']
+
+SUMMARY = args['summary']
+
+QC = args['qc']
+
+ASSOC= args['assoc']
+TEST = args['test']
+MODEL = args['model']
+FREQ = args['freq']
+
+ANNOT = args['annotation']
+###################################################
+if SUMMARY:
+	if HLAcount.quantTrait(INFILE):
+		alleles, genes, n = HLAcount.alleleCount(INFILE, DIGIT)
+		if PRINT:
+			HLAIO.printSummaryQuant(alleles, genes, n)
+		HLAIO.writeSummaryQuant(alleles, genes, n, OUTFILE)
+	else:
+		caseAlleles, ctrlAlleles, np, nc, nn = HLAcount.allelicCount(INFILE, DIGIT)
+		freq, alleles = HLAcount.hlaFreq(caseAlleles, ctrlAlleles, np, nc, nn)
+		if PRINT:
+			HLAIO.printSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn)
+		HLAIO.writeSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn, OUTFILE)
+elif QC:
+	pass
+elif ASSOC:
+	pass
+elif ANNOT:
+	pass
+else:
+	pass
+###################################################
+
