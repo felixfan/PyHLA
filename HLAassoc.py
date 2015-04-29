@@ -228,11 +228,12 @@ def assocRaw(infile, digit, freq, exclude=None, perm=None, seed=None):
 		n2 = []
 		for a in caseAlleles:
 			if a in ctrlAlleles:
-				if a.startswith(g):
-					if alleleFreq[a][2] > freq:
-						n1.append(caseAlleles[a])
-						n2.append(ctrlAlleles[a])
-						usedAllele.append(a)
+				if allele not in excludeAlleles:
+					if a.startswith(g):
+						if alleleFreq[a][2] > freq:
+							n1.append(caseAlleles[a])
+							n2.append(ctrlAlleles[a])
+							usedAllele.append(a)
 		data = [n1, n2]
 		chi2, p, dof, expected = scipy.stats.chi2_contingency(data)
 		ss = []
@@ -339,10 +340,11 @@ def assocScoreU(infile, digit, freq, exclude=None, perm=None, seed=None):
 		n1 = np[g]
 		for a in caseAlleles:
 			if a in ctrlAlleles:
-				if a.startswith(g):
-					if alleleFreq[a][2] > freq:
-						usedAllele.append(a)
-						u = u + (caseAlleles[a] - n1 * alleleFreq[a][2]) ** 2 / alleleFreq[a][2] - (caseAlleles[a] - n1 * alleleFreq[a][2]) / alleleFreq[a][2]
+				if allele not in excludeAlleles:
+					if a.startswith(g):
+						if alleleFreq[a][2] > freq:
+							usedAllele.append(a)
+							u = u + (caseAlleles[a] - n1 * alleleFreq[a][2]) ** 2 / alleleFreq[a][2] - (caseAlleles[a] - n1 * alleleFreq[a][2]) / alleleFreq[a][2]
 		if not isinstance(u, float):
 			u = 'NA'
 		assoc[g] = u

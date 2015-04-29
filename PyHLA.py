@@ -4,10 +4,11 @@ import argparse
 import HLAcount
 import HLAassoc
 import HLAIO
+import HLAregression
 
 ###################################################
 parser = argparse.ArgumentParser(description='Python for HLA analysis', prog="PyHLA.py")
-parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.3')
+parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.4')
 parser.add_argument('-V', '--print', help='print output to screen', action='store_true')
 parser.add_argument('-i', '--infile', help='input file', required=True, type=str)
 parser.add_argument('-o', '--out', help='output file', default='output.txt')
@@ -102,7 +103,18 @@ elif ASSOC:
 			if PRINT:
 				HLAIO.printAssocScore(assoc, alleles, permP, permN, permNA)
 			HLAIO.writeAssocScore(assoc, alleles, OUTFILE, permP, permN, permNA)
-	else:
+	elif TEST == 'logistic':
+		if PERM is None:
+			assoc = HLAregression.regressionLogistic(INFILE, DIGIT, FREQ, ADJUST, EXCLUDE, COVFILE, COVNAME, PERM, SEED, TEST)
+			if PRINT:
+				HLAIO.printLogistic(assoc)
+			HLAIO.writeLogistic(assoc, OUTFILE)
+		else:
+			assoc, permP, permN, permNA = HLAregression.regressionLogistic(INFILE, DIGIT, FREQ, ADJUST, EXCLUDE, COVFILE, COVNAME, PERM, SEED, TEST)
+			if PRINT:
+				HLAIO.printLogistic(assoc, permP, permN, permNA)
+			HLAIO.writeLogistic(assoc, OUTFILE, permP, permN, permNA)
+	elif TEST == 'linear':
 		pass
 elif ANNOT:
 	pass
