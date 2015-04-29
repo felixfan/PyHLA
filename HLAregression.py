@@ -245,7 +245,7 @@ def regressionLogistic(infile, digits, freq, adjust = 'FDR', exclude=None, covfi
 			permNA[a] = 0
 			permNL[a] = 0
 			permN[a] = 0
-		if perm >= 10:
+		if perm > 10:
 			pf = perm / 10
 		else:
 			pf = 2
@@ -296,3 +296,170 @@ def regressionLogistic(infile, digits, freq, adjust = 'FDR', exclude=None, covfi
 					permP[a] = 1.0 * (permN[a] + 1) / (perm + 1 - permNA[a])
 	return assoc, permP, permN, permNA
 ##################################################################
+def regressionLinear(infile, digits, freq, adjust = 'FDR', exclude=None, covfile=None, covname=None, perm=None, seed=None, test='linear'):
+	'''
+	linear regression with covariants
+	output: dictionary, key: allele, value: statistic includes freq, p and beta
+	'''
+	### geno
+	tfile = writeRecode(infile, digits, test)
+	geno = pd.read_csv(tfile,delim_whitespace= True, header = 0)
+	os.remove(tfile)
+	alleles = list(geno.columns.values)[2:]
+	### exclude alleles
+	excludeAlleles =[]
+	if exclude is not None:
+		ef = open(exclude)
+		for line in ef:
+			line = line.strip()
+			excludeAlleles.append(line)
+		ef.close()
+	### covar file
+	if covfile is not None:
+		cov = pd.read_csv(covfile,delim_whitespace= True, header = 0)
+		covindex = list(cov.columns.values)[1:]
+		### covar name
+		if covname is None:                           # default: use all covariants
+			covname = covindex
+		else:
+			covname = covname.split(',')
+	### assoc
+	usedAllele = []
+	assoc = {}
+	for allele in alleles:
+		if allele not in excludeAlleles:
+			n1 = int(geno[allele].sum(axis=0)) # number of allele
+			n2 = int(geno[allele].count()) * 2 # total allele
+			f12 = 1.0 * n1 / n2
+			if f12 > freq:
+				usedAllele.append(allele)
+				myformula = 'PHT ~ ' + allele
+				if covfile is None:
+					mydata = geno.ix[:, ['IID', 'PHT', allele]]
+				else:
+					geno9 = geno.ix[:, ['IID', 'PHT', allele]]
+					mydata = pd.merge(geno9, cov, on='IID', how='inner')
+					for name in covname:
+						if name in covindex:
+							myformula = myformula + ' + ' + name
+						else:
+							print 'can not find covariant name ' + '"' + name + '" in covariant file'
+							sys.exit()
+				try:
+					lr = smf.ols(formula = myformula, data = mydata).fit(maxiter=100, disp=False)
+					p = lr.pvalues[1]
+					beta = lr.params[1]
+					L95 = lr.conf_int()[0][1]
+					U95 = lr.conf_int()[1][1]
+				except:
+					p = 'NA'
+					beta = 'NA'
+					L95 = 'NA'
+					U95 = 'NA'
+				aname = allele.split('_')
+				nname = aname[0] + '*' + aname[1]
+				if digits == 4:
+					nname = nname + ':' + aname[2]
+				elif digits == 6:
+					nname = nname + ':' + aname[2] + ':' + aname[3]
+				ss = []
+				ss.append(f12)
+				if p != 'NA':
+					ss.append(p)
+				else:
+					ss.append('NA')
+				if beta != 'NA':
+					ss.append(beta)
+				else:
+					ss.append('NA')
+				if L95 != 'NA':
+					ss.append(L95)
+				else:
+					ss.append('NA')
+				if U95 != 'NA':
+					ss.append(U95)
+				else:
+					ss.append('NA')
+				assoc[nname] = ss
+	### adjust
+	genes = []
+	for a in assoc:
+		genes.append(a.split('*')[0])
+	genes = set(genes)
+	for g in sorted(genes):      ### GENE BY GENE
+		ps = [] # p value
+		ns = [] # allele name
+		for a in assoc:
+			if a.startswith(g) and assoc[a][1] != 'NA':  # p value at 1 col start from 0
+				ps.append(assoc[a][1])
+				ns.append(a)
+		cp = HLAassoc.adjustP(ps,adjust)
+		for i in range(len(ns)):
+			if assoc[ns[i]][1] != 'NA':
+				assoc[ns[i]].append(cp[i])
+			else:
+				assoc[ns[i]].append('NA')
+
+	### perm
+	if perm is None:
+		return assoc
+	else:
+		random.seed(seed)
+		permP = {}
+		permN = {}
+		permNL = {}
+		permNA = {}
+		for a in assoc:
+			permNA[a] = 0
+			permNL[a] = 0
+			permN[a] = 0
+		if perm > 10:
+			pf = perm / 10
+		else:
+			pf = 2
+		for i in range(perm):
+			if i % pf == 1:
+				print 'permutation {}/{} ...'.format(i, perm)
+			xxx = geno['PHT'].values.flatten()
+			random.shuffle(xxx)
+			geno['PHT'] = xxx
+			for allele in alleles:
+				aname = allele.split('_')
+				nname = aname[0] + '*' + aname[1]
+				if digits == 4:
+					nname = nname + ':' + aname[2]
+				elif digits == 6:
+					nname = nname + ':' + aname[2] + ':' + aname[3]
+				if nname in assoc:
+					myformula = 'PHT ~ ' + allele
+					if covfile is None:
+						mydata = geno.ix[:, ['IID', 'PHT', allele]]
+					else:
+						for name in covname:
+							myformula = myformula + ' + ' + name
+						geno9 = geno.ix[:, ['IID', 'PHT', allele]]
+						mydata = pd.merge(geno9, cov, on='IID', how='inner')
+					try:
+						lr = smf.ols(formula = myformula, data = mydata).fit(maxiter=100, disp=False)
+						p = lr.pvalues[1]
+					except:
+						p = 'NA'
+					if p == 'NA':
+						permNA[nname] += 1
+					else:
+						if assoc[nname] == 'NA':
+							permNA[nname] += 1
+						else:
+							if p < assoc[nname][1]:
+								permN[nname] += 1
+							else:
+								permNL[nname] += 1
+		for a in assoc:
+			if assoc[a] == 'NA':
+				permP[a] = 'NA'
+			else:
+				if permNA[a] == perm:
+					permP[a] = 'NA'
+				else:
+					permP[a] = 1.0 * (permN[a] + 1) / (perm + 1 - permNA[a])
+	return assoc, permP, permN, permNA

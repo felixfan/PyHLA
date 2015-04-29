@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 
 import argparse
+import time
+import sys
 import HLAcount
 import HLAassoc
 import HLAIO
 import HLAregression
 
+strattime = time.time()
 ###################################################
 parser = argparse.ArgumentParser(description='Python for HLA analysis', prog="PyHLA.py")
-parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.4')
+parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.5')
 parser.add_argument('-V', '--print', help='print output to screen', action='store_true')
 parser.add_argument('-i', '--infile', help='input file', required=True, type=str)
 parser.add_argument('-o', '--out', help='output file', default='output.txt')
@@ -54,6 +57,47 @@ COVNAME = args['covarname'] if 'covarname' in args else None
 EXCLUDE = args['exclude'] if 'exclude' in args else None
 
 ANNOT = args['annotation']
+
+###################################################
+print "@-------------------------------------------------------------@"
+print "|       PyHLA       |     v0.5      |        29 Apr 2015      |"
+print "|-------------------------------------------------------------|"
+print "|  (C) 2015 Felix Yanhui Fan, GNU General Public License, v2  |"
+print "|-------------------------------------------------------------|"
+print "|    For documentation, citation & bug-report instructions:   |"
+print "|          http://felixfan.github.io/PyHLA                    |"
+print "@-------------------------------------------------------------@"
+print "\n\tOptions in effect:"
+print "\t--infile", INFILE
+print "\t--digits", DIGIT
+print "\t--print"
+if SUMMARY:
+	print "\t--summary"
+elif QC:
+	print "\t--qc"
+elif ASSOC:
+	print "\t--assoc"
+	print "\t--test", TEST
+	if TEST == 'chisq' or TEST == 'fisher':
+		print "\t--model", MODEL
+	elif TEST == 'logistic' or 'linear':
+		if COVFILE:
+			print "\t--covar", COVFILE
+			if COVNAME:
+				print "\t--covarname", COVNAME
+	print "\t--freq", FREQ
+	if EXCLUDE:
+		print "\t--exclude", EXCLUDE
+	if TEST != 'raw' and TEST != 'score':
+		print "\t--adjust", ADJUST
+	if PERM:
+		print "\t--perm", PERM
+		if SEED:
+			print "\t--seed", SEED
+elif ANNOT:
+	print "\t--annot"
+print "\t--out", OUTFILE
+print
 ###################################################
 if SUMMARY:
 	if HLAcount.quantTrait(INFILE):
@@ -70,6 +114,12 @@ if SUMMARY:
 elif QC:
 	pass
 elif ASSOC:
+	if HLAcount.quantTrait(INFILE):
+		if TEST != 'linear':
+			sys.exit("quantitative trait was detected, only linear regression can be used for association analysis!")
+	else:
+		if TEST =='linear':
+			sys.exit("case-control trait was detected, linear regression can not be used for association analysis!")
 	if TEST == 'chisq' or TEST == 'fisher':
 		if PERM is None:
 			assoc = HLAassoc.assocADRChiFisher(INFILE, DIGIT, FREQ, TEST,MODEL,ADJUST,EXCLUDE, PERM, SEED)
@@ -115,10 +165,36 @@ elif ASSOC:
 				HLAIO.printLogistic(assoc, permP, permN, permNA)
 			HLAIO.writeLogistic(assoc, OUTFILE, permP, permN, permNA)
 	elif TEST == 'linear':
-		pass
+		if PERM is None:
+			assoc = HLAregression.regressionLinear(INFILE, DIGIT, FREQ, ADJUST, EXCLUDE, COVFILE, COVNAME, PERM, SEED, TEST)
+			if PRINT:
+				HLAIO.printLinear(assoc)
+			HLAIO.writeLinear(assoc, OUTFILE)
+		else:
+			assoc, permP, permN, permNA = HLAregression.regressionLinear(INFILE, DIGIT, FREQ, ADJUST, EXCLUDE, COVFILE, COVNAME, PERM, SEED, TEST)
+			if PRINT:
+				HLAIO.printLinear(assoc, permP, permN, permNA)
+			HLAIO.writeLinear(assoc, OUTFILE, permP, permN, permNA)
 elif ANNOT:
 	pass
 else:
 	pass
 ###################################################
-
+usedtime = time.time() - strattime
+print "Time used:",
+if usedtime >=60:
+	ts = int(usedtime) % 60
+	usedtime = int(usedtime) / 60
+	tm = int(usedtime) % 60
+	usedtime = int(usedtime) / 60
+	th = int(usedtime) % 60
+	if th > 0:
+		print "%d hours"  % th,
+		print "%d minutes"  % tm,
+	elif tm > 0:
+		print "%d minutes"  % tm,
+else:
+	ts = usedtime
+print '%.2f seconds' % ts
+print "Finished at ",
+print time.strftime("%H:%M:%S %d %b %Y")

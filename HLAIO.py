@@ -477,5 +477,77 @@ def writeLogistic(assoc, outfile, permP=None, permN=None, permNA=None):
 			fp.write("%8d" % permN[a])
 			fp.write("%8d\n" % permNA[a])
 ###########################################################################
+def printLinear(assoc, permP=None, permN=None, permNA=None):
+	print "%20s" % 'Allele',
+	print "%8s" % "Freq",
+	print "%10s" % 'P_Linear',
+	for a in ("beta","L95","U95"):
+		print "%8s" % a,
+	if permP is None:
+		print "%10s" % 'P_adj'
+	else:
+		print "%10s" % 'P_adj',
+		print "%10s" % 'P_perm',
+		print "%8s" % 'PermN',
+		print "%8s" % 'permNA'
+	for a in sorted(assoc.keys()):
+		print "%20s" % a,
+		print "%8.4f" % assoc[a][0],
+		if assoc[a][1] > 0.001:
+			print "%10.4f" % assoc[a][1],
+		else:
+			print "%10.2e" % assoc[a][1],
+		for i in range(2, 5):
+				print "%8.4f" % assoc[a][i],
+		if assoc[a][5] > 0.001:
+			print "%10.4f" % assoc[a][5],
+		else:
+			print "%10.2e" % assoc[a][5],
+		if permP is None:
+			print
+		else:
+			if permP[a] > 0.001:
+				print "%10.4f" % permP[a],
+			else:
+				print "%10.2e" % permP[a],
+			print "%8d" % permN[a],
+			print "%8d" % permNA[a]
+def writeLinear(assoc, outfile, permP=None, permN=None, permNA=None):
+	fp = open(outfile, 'w')
+	fp.write("%20s" % 'Allele')
+	fp.write("%8s" % "Freq")
+	fp.write("%10s" % 'P_Linear')
+	for a in ("beta","L95","U95"):
+		fp.write("%8s" % a)
+	if permP is None:
+		fp.write("%10s\n" % 'P_adj')
+	else:
+		fp.write("%10s" % 'P_adj')
+		fp.write("%10s" % 'P_perm')
+		fp.write("%8s" % 'PermN')
+		fp.write("%8s\n" % 'permNA')
+	for a in sorted(assoc.keys()):
+		fp.write("%20s" % a)
+		fp.write("%8.4f" % assoc[a][0])
+		if assoc[a][1] > 0.001:
+			fp.write("%10.4f" % assoc[a][1])
+		else:
+			fp.write("%10.2e" % assoc[a][1])
+		for i in range(2, 5):
+				fp.write("%8.4f" % assoc[a][i])
+		if assoc[a][5] > 0.001:
+			fp.write("%10.4f" % assoc[a][5])
+		else:
+			fp.write("%10.2e" % assoc[a][5])
+		if permP is None:
+			fp.write('\n')
+		else:
+			if permP[a] > 0.001:
+				fp.write("%10.4f" % permP[a])
+			else:
+				fp.write("%10.2e" % permP[a])
+			fp.write("%8d" % permN[a])
+			fp.write("%8d\n" % permNA[a])
+###########################################################################
 
 ###########################################################################
