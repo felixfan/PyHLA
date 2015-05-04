@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-def printSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn):
-	print 'Sample size: %d'  % nn
+def printSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn, popCase, popCtrl, popP, popC):
+	print 'Sample size: %d'  % nn[0]
+	print 'Number of cases: %d'  % nn[1]
+	print 'Number of controls: %d'  % nn[2]
 	print
 	print 'Gene level summary'
 	print '------------------------------------------------------------------'
@@ -32,9 +34,32 @@ def printSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn):
 		for f in freq[allele]:
 			print "%12.4f" % f,
 		print
-def writeSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn, OUTFILE):
+	print '\nPopulation level summary'
+	print '------------------------------------------------------------------'
+	print "%20s" % 'Allele',
+	for a in ('popCaseCount',  'popCaseFreq', 'popCtrlCount', 'popCtrlFreq'):
+		print "%14s" % a,
+	print
+	for allele in alleles:
+		print  "%20s" % allele,
+		if allele in popCase:
+			print "%14d" % popCase[allele],
+			print "%14.4f" % (1.0 * popCase[allele] / popP[allele.split('*')[0]]),
+		else:
+			print "%14d" % 0,
+			print "%14d" % 0,
+		if allele in popCtrl:
+			print "%14d" % popCtrl[allele],
+			print "%14.4f" % (1.0 * popCtrl[allele] / popC[allele.split('*')[0]])
+		else:
+			print "%14d" % 0,
+			print "%14d" % 0
+def writeSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn, OUTFILE, popCase, popCtrl, popP, popC):
 	fp = open(OUTFILE, 'w')
-	fp.write('Sample size: %d\n\n'  % nn)
+	fp.write('Sample size: %d\n'  % nn[0])
+	fp.write('Number of cases: %d\n'  % nn[1])
+	fp.write('Number of controls: %d\n\n'  % nn[2])
+
 	fp.write('Gene level summary\n')
 	fp.write('------------------------------------------------------------------\n')
 	fp.write('%20s%12s%12s%12s\n' % ('Gene', 'CaseCount', 'CtrlCount', 'TotalCount'))
@@ -61,6 +86,26 @@ def writeSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn, OUTFILE):
 		for f in freq[allele]:
 			fp.write("%12.4f" % f)
 		fp.write('\n')
+	fp.write('\nPopulation level summary\n')
+	fp.write('------------------------------------------------------------------\n')
+	fp.write("%20s" % 'Allele')
+	for a in ('popCaseCount',  'popCaseFreq', 'popCtrlCount', 'popCtrlFreq'):
+		fp.write("%14s" % a)
+	fp.write('\n')
+	for allele in alleles:
+		fp.write("%20s" % allele)
+		if allele in popCase:
+			fp.write("%14d" % popCase[allele])
+			fp.write("%14.4f" % (1.0 * popCase[allele] / popP[allele.split('*')[0]]))
+		else:
+			fp.write("%14d" % 0)
+			fp.write("%14d" % 0)
+		if allele in popCtrl:
+			fp.write("%14d" % popCtrl[allele])
+			fp.write("%14.4f\n" % (1.0 * popCtrl[allele] / popC[allele.split('*')[0]]))
+		else:
+			fp.write("%14d" % 0)
+			fp.write("%14d\n" % 0)
 	fp.close()
 ###########################################################################
 def printSummaryQuant(alleles, genes, n):
@@ -549,5 +594,59 @@ def writeLinear(assoc, outfile, permP=None, permN=None, permNA=None):
 			fp.write("%8d" % permN[a])
 			fp.write("%8d\n" % permNA[a])
 ###########################################################################
-
+def printAssocDelta(assoc, perm=None):
+	print "%20s" % 'Allele',
+	for a in ("Delta","P_FET","OR","P_adj"):
+		print "%10s" % a,
+	if perm is None:
+		print
+	else:
+		print "%10s" % "P_perm"
+	for a in sorted(assoc.keys()):
+		print "%20s" % a,
+		print "%10.4f" % assoc[a][0],
+		if assoc[a][1] > 0.001:
+			print "%10.4f" % assoc[a][1],
+		else:
+			print "%10.2e" % assoc[a][1],
+		print "%10.4f" % assoc[a][2],
+		if assoc[a][3] > 0.001:
+			print "%10.4f" % assoc[a][3],
+		else:
+			print "%10.2e" % assoc[a][3],
+		if perm is None:
+			print
+		else:
+			if assoc[a][4] > 0.001:
+				print "%10.4f" % assoc[a][4]
+			else:
+				print "%10.2e" % assoc[a][4]
+def writeAssocDelta(assoc, outfile, perm=None):
+	fp = open(outfile, 'w')
+	fp.write("%20s" % 'Allele')
+	for a in ("Delta","P_FET","OR","P_adj"):
+		fp.write("%10s" % a)
+	if perm is None:
+		fp.write('\n')
+	else:
+		fp.write("%10s\n" % "P_perm")
+	for a in sorted(assoc.keys()):
+		fp.write("%20s" % a)
+		fp.write("%10.4f" % assoc[a][0])
+		if assoc[a][1] > 0.001:
+			fp.write("%10.4f" % assoc[a][1])
+		else:
+			fp.write("%10.2e" % assoc[a][1])
+		fp.write("%10.4f" % assoc[a][2])
+		if assoc[a][3] > 0.001:
+			fp.write("%10.4f" % assoc[a][3])
+		else:
+			fp.write("%10.2e" % assoc[a][3])
+		if perm is None:
+			fp.write('\n')
+		else:
+			if assoc[a][4] > 0.001:
+				fp.write("%10.4f\n" % assoc[a][4])
+			else:
+				fp.write("%10.2e\n" % assoc[a][4])
 ###########################################################################

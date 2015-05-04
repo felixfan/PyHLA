@@ -11,7 +11,7 @@ import HLAregression
 strattime = time.time()
 ###################################################
 parser = argparse.ArgumentParser(description='Python for HLA analysis', prog="PyHLA.py")
-parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.5')
+parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.7')
 parser.add_argument('-V', '--print', help='print output to screen', action='store_true')
 parser.add_argument('-i', '--infile', help='input file', required=True, type=str)
 parser.add_argument('-o', '--out', help='output file', default='output.txt')
@@ -23,7 +23,7 @@ parser.add_argument('-q', '--qc', help='quality control', action='store_true')
 ### association analysis
 parser.add_argument('-a', '--assoc', help='association analysis', action='store_true')
 parser.add_argument('-m', '--model', help='genetic model, default allelic', default='allelic', type=str, choices=['allelic','dom','rec'])
-parser.add_argument('-t', '--test', help='statistical test method, default chisq', default='chisq', type=str, choices=['chisq','fisher','logistic','linear','raw','score'])
+parser.add_argument('-t', '--test', help='statistical test method, default chisq', default='chisq', type=str, choices=['chisq','fisher','logistic','linear','raw','score', 'delta'])
 parser.add_argument('-f', '--freq', help='minimal frequency, default 0.05', default=0.05, type=float)
 parser.add_argument('-j', '--adjust', help='p value correction, default FDR', default='FDR', type=str,choices=['FDR','FDR_BY','Bonferroni','Holm'])
 parser.add_argument('-e', '--exclude', help='exclude alleles file', type=str)
@@ -60,7 +60,7 @@ ANNOT = args['annotation']
 
 ###################################################
 print "@-------------------------------------------------------------@"
-print "|       PyHLA       |     v0.5      |        29 Apr 2015      |"
+print "|       PyHLA       |     v0.7      |        04 May 2015      |"
 print "|-------------------------------------------------------------|"
 print "|  (C) 2015 Felix Yanhui Fan, GNU General Public License, v2  |"
 print "|-------------------------------------------------------------|"
@@ -107,10 +107,11 @@ if SUMMARY:
 		HLAIO.writeSummaryQuant(alleles, genes, n, OUTFILE)
 	else:
 		caseAlleles, ctrlAlleles, np, nc, nn = HLAcount.allelicCount(INFILE, DIGIT)
-		freq, alleles = HLAcount.hlaFreq(caseAlleles, ctrlAlleles, np, nc, nn)
+		freq, alleles = HLAcount.hlaFreq(caseAlleles, ctrlAlleles, np, nc, nn[0])
+		popCase, popCtrl, popP, popC, popN = HLAcount.domCount(INFILE, DIGIT)
 		if PRINT:
-			HLAIO.printSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn)
-		HLAIO.writeSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn, OUTFILE)
+			HLAIO.printSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn, popCase, popCtrl, popP, popC)
+		HLAIO.writeSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn, OUTFILE, popCase, popCtrl, popP, popC)
 elif QC:
 	pass
 elif ASSOC:
@@ -175,6 +176,11 @@ elif ASSOC:
 			if PRINT:
 				HLAIO.printLinear(assoc, permP, permN, permNA)
 			HLAIO.writeLinear(assoc, OUTFILE, permP, permN, permNA)
+	elif TEST == 'delta':
+		assoc = HLAassoc.assocDelta(INFILE, DIGIT, FREQ, ADJUST, EXCLUDE, PERM, SEED)
+		if PRINT:
+			HLAIO.printAssocDelta(assoc, PERM)
+		HLAIO.writeAssocDelta(assoc, OUTFILE, PERM)
 elif ANNOT:
 	pass
 else:

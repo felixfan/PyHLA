@@ -406,3 +406,109 @@ def assocScoreU(infile, digit, freq, exclude=None, perm=None, seed=None):
 				else:
 					permP[a] = 1.0 * (permN[a] + 1) / (perm + 1 - permNA[a])
 		return assoc, usedAllele, permP, permN, permNA, permNL
+#################################################################
+def assocDelta(infile, digit, freq=0.05, adjust='FDR', exclude=None, perm=None, seed=None):
+	popCase, popCtrl, popP, popC, popN = HLAcount.domCount(infile, digit)
+	caseAlleles99, ctrlAlleles99, np99, nc99, nn99 = HLAcount.allelicCount(infile, digit)
+	alleleFreq, alleles = HLAcount.hlaFreq(caseAlleles99, ctrlAlleles99, np99, nc99, nn99)
+
+	assoc ={}
+	usedAllele = []
+
+	excludeAlleles =[]
+	if exclude is not None:
+		ef = open(exclude)
+		for line in ef:
+			line = line.strip()
+			excludeAlleles.append(line)
+		ef.close()
+
+	for allele in alleles:
+		if allele not in excludeAlleles:
+			if alleleFreq[allele] > freq:
+				usedAllele.append(allele)
+				np = popP[allele.split('*')[0]]
+				nc = popC[allele.split('*')[0]]
+				if allele in popCase:
+					n1 = popCase[allele]	
+				else:
+					n1 = 0
+				tfp = 1.0 * n1 / np
+				n2 = np - n1
+				if allele in popCtrl:
+					n3 =  popCtrl[allele]
+				else:
+					n3 = 0
+				tfc = 1.0 * n3 / nc
+				n4 = nc - n3
+				delta = tfp - tfc
+				data = [[n1, n2], [n3, n4]]
+				OR, p = scipy.stats.fisher_exact(data)
+				OR = (n1 + 0.5) * (n4 + 0.5) / (n2 + 0.5) / (n3 + 0.5)
+				tmp = []
+				tmp.append(delta)
+				tmp.append(p)
+				tmp.append(OR)
+				assoc[allele] = tmp
+
+	### adjust
+	genes = []
+	for g in popP.keys():
+		if g in popC.keys():
+			genes.append(g)
+	for g in sorted(genes):      ### GENE BY GENE
+		ps = []
+		ns = []
+		for a in assoc:
+			if a.startswith(g) and assoc[a][1] != 'NA':  # p value at 7 col start from 0
+				ps.append(assoc[a][1])
+				ns.append(a)
+		cp = adjustP(ps,adjust)
+		for i in range(len(ns)):
+			if assoc[ns[i]][1] != 'NA':
+				assoc[ns[i]].append(cp[i])
+			else:
+				assoc[ns[i]].append('NA')
+
+	### perm
+	if perm is None:
+		return assoc
+	else:
+		random.seed(seed)
+		permN = {}      # perm delta > orig delta
+		for a in assoc:
+			permN[a] = 0
+		if perm > 10:
+			pf = perm / 10
+		else:
+			pf = 2
+		pn = 0   # effect perm number
+		while True:
+			case9, ctrl9, np9, nc9, nn9 = HLAcount.domCount(infile,digit, True)
+        		for allele in usedAllele:
+        			np = np9[allele.split('*')[0]]
+				nc = nc9[allele.split('*')[0]]
+				if allele in case9:
+					n1 = case9[allele]	
+				else:
+					n1 = 0
+				tfp = 1.0 * n1 / np
+				n2 = np - n1
+				if allele in ctrl9:
+					n3 =  ctrl9[allele]
+				else:
+					n3 = 0
+				tfc = 1.0 * n3 / nc
+				n4 = nc - n3
+				delta = tfp - tfc
+				if delta > assoc[allele][0]:
+					permN[allele] += 1
+			pn += 1
+			if pn % pf == 1:
+				print 'permutation {}/{} ...'.format(pn, perm)
+			if pn == perm:
+				break
+		for a in assoc:
+			permP = 1.0 * (1 + permN[a]) / (1 + perm)
+			assoc[a].append(permP)
+		return assoc

@@ -20,7 +20,17 @@ def allelicCount(infile, digits, perm=False):
 	if perm:
 		random.shuffle(pht)
 	l = 0     # line index
-	nn = len(pht)
+	nn = []
+	nn.append(len(pht))
+	nnp = 0
+	nnc = 0
+	for p in pht:
+		if p == '1':
+			nnc += 1
+		elif p == '2':
+			nnp += 1
+	nn.append(nnp)
+	nn.append(nnc)
 	f = open(infile)
 	for line in f:
 		line = line.rstrip()
@@ -248,9 +258,9 @@ def hlaFreq(caseAlleles, ctrlAlleles, np, nc, nn):
 		if allele in caseAlleles and allele in ctrlAlleles:
 			ff.append(1.0 * (ctrlAlleles[allele] + caseAlleles[allele]) / (np[allele.split('*')[0]] + nc[allele.split('*')[0]]))
 		elif allele in caseAlleles:
-			ff.append(1.0 * caseAlleles[allele] / np[allele.split('*')[0]])
+			ff.append(1.0 * caseAlleles[allele] / (np[allele.split('*')[0]] + nc[allele.split('*')[0]]))
 		else:
-			ff.append(1.0 * ctrlAlleles[allele] / nc[allele.split('*')[0]])
+			ff.append(1.0 * ctrlAlleles[allele] / (np[allele.split('*')[0]] + nc[allele.split('*')[0]]))
 		freq[allele] = ff
 	return freq, alleles
 def alleleCount(infile, digits):
