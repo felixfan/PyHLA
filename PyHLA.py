@@ -7,6 +7,7 @@ import HLAcount
 import HLAassoc
 import HLAIO
 import HLAregression
+import HLAAA
 
 strattime = time.time()
 ###################################################
@@ -31,9 +32,14 @@ parser.add_argument('-c', '--covar', help='covariants file', type=str)
 parser.add_argument('-n', '--covarname', help='select a particular subset of covariates', type=str)
 parser.add_argument('-p', '--perm', help='number of permutation', type=int)
 parser.add_argument('-r', '--seed', help='random seed', type=int)
-### annotation
-parser.add_argument('-A', '--annotation', help='annotation', action='store_true')
+### amino acid association analysis
+parser.add_argument('-A', '--assocAA', help='amino acid association analysis', action='store_true')
+parser.add_argument('-u', '--consensus', help='use the sonsensus amino acid senquence', action='store_true')
+### amino acid alignment
+parser.add_argument('-w', '--align', help='amino acid senquence alignment', action='store_true')
 ###################################################
+aafile = 'aa.aln.txt'
+
 args = vars(parser.parse_args())
 
 INFILE = args['infile']
@@ -56,11 +62,13 @@ COVFILE = args['covar'] if 'covar' in args else None
 COVNAME = args['covarname'] if 'covarname' in args else None
 EXCLUDE = args['exclude'] if 'exclude' in args else None
 
-ANNOT = args['annotation']
+AAA = args['assocAA']
+CONSENSUS = args['consensus']
 
+ALN = args['align']
 ###################################################
 print "@-------------------------------------------------------------@"
-print "|       PyHLA       |     v0.7      |        04 May 2015      |"
+print "|       PyHLA       |     v0.8      |        11 May 2015      |"
 print "|-------------------------------------------------------------|"
 print "|  (C) 2015 Felix Yanhui Fan, GNU General Public License, v2  |"
 print "|-------------------------------------------------------------|"
@@ -69,13 +77,15 @@ print "|          http://felixfan.github.io/PyHLA                    |"
 print "@-------------------------------------------------------------@"
 print "\n\tOptions in effect:"
 print "\t--infile", INFILE
-print "\t--digits", DIGIT
-print "\t--print"
+if PRINT:
+	print "\t--print"
 if SUMMARY:
+	print "\t--digits", DIGIT
 	print "\t--summary"
 elif QC:
 	print "\t--qc"
 elif ASSOC:
+	print "\t--digits", DIGIT
 	print "\t--assoc"
 	print "\t--test", TEST
 	if TEST == 'chisq' or TEST == 'fisher':
@@ -94,8 +104,15 @@ elif ASSOC:
 		print "\t--perm", PERM
 		if SEED:
 			print "\t--seed", SEED
-elif ANNOT:
-	print "\t--annot"
+elif AAA:
+	print "\t--assocAA"
+	print "\t--test", TEST
+	if CONSENSUS:
+		print "\t--consensus"
+elif ALN:
+	print "\t--align"
+	if CONSENSUS:
+		print "\t--consensus"
 print "\t--out", OUTFILE
 print
 ###################################################
@@ -181,10 +198,26 @@ elif ASSOC:
 		if PRINT:
 			HLAIO.printAssocDelta(assoc, PERM)
 		HLAIO.writeAssocDelta(assoc, OUTFILE, PERM)
-elif ANNOT:
-	pass
+elif AAA or ALN:
+	if HLAcount.quantTrait(INFILE):
+		sys.exit("quantitative trait was detected, only case-control data can be used for amino acid analysis!")
+	case, ctrl, caseGeno, ctrlGeno, ncase, nctrl = HLAAA.readGeno(INFILE)
+	seq = HLAAA.readAAseq(aafile)
+	alleles = HLAAA.keyDicts(case, ctrl)
+	myseq = HLAAA.getSeq(alleles, seq, CONSENSUS)
+	if AAA:
+		assoc = HLAAA.aaAssoc(case, ctrl, caseGeno, ctrlGeno, ncase, nctrl, myseq, TEST)
+		if PRINT:
+			HLAAA.printAAA(assoc)
+		HLAAA.writeAAA(assoc, OUTFILE)
+	elif ALN:
+		myaln = HLAAA.aaAlign(case, ctrl, myseq)
+		if PRINT:
+			HLAAA.printAA(myaln)
+		HLAAA.writeAA(myaln, OUTFILE)
 else:
-	pass
+	c = ('summary', 'qc', 'assoc', 'assocAA', 'align')
+	sys.exit("one of the following option must be used: \n%s\n%s\n%s\n%s\n%s\n" % c)
 ###################################################
 usedtime = time.time() - strattime
 print "Time used:",
