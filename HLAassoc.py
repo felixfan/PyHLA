@@ -228,7 +228,7 @@ def assocRaw(infile, digit, freq, exclude=None, perm=None, seed=None):
 		n2 = []
 		for a in caseAlleles:
 			if a in ctrlAlleles:
-				if allele not in excludeAlleles:
+				if a not in excludeAlleles:
 					if a.startswith(g):
 						if alleleFreq[a][2] > freq:
 							n1.append(caseAlleles[a])
@@ -340,7 +340,7 @@ def assocScoreU(infile, digit, freq, exclude=None, perm=None, seed=None):
 		n1 = np[g]
 		for a in caseAlleles:
 			if a in ctrlAlleles:
-				if allele not in excludeAlleles:
+				if a not in excludeAlleles:
 					if a.startswith(g):
 						if alleleFreq[a][2] > freq:
 							usedAllele.append(a)

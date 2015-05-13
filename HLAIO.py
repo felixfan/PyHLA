@@ -170,7 +170,9 @@ def printAssocChiFisher(assoc, test, permP=None, permN=None, permNA=None):
 			print "%8d" % assoc[a][i],
 		for i in range(4,7):
 			print "%8.4f" % assoc[a][i],
-		if assoc[a][7] > 0.001:
+		if assoc[a][7] == 'NA':
+			print "%10s" % 'NA',
+		elif assoc[a][7] > 0.001:
 			print "%10.4f" % assoc[a][7],
 		else:
 			print "%10.2e" % assoc[a][7],
@@ -179,14 +181,18 @@ def printAssocChiFisher(assoc, test, permP=None, permN=None, permNA=None):
 			print "%4d" % assoc[a][9],
 			for i in range(10, 13):
 				print "%8.4f" % assoc[a][i],
-			if assoc[a][13] > 0.001:
+			if assoc[a][13] == 'NA':
+				print "%10s" % 'NA',
+			elif assoc[a][13] > 0.001:
 				print "%10.4f" % assoc[a][13],
 			else:
 				print "%10.2e" % assoc[a][13],
 		else:
 			for i in range(8, 11):
-				print "%6.4f" % assoc[a][i],
-			if assoc[a][11] > 0.001:
+				print "%8.4f" % assoc[a][i],
+			if assoc[a][11] == 'NA':
+				print "%10s" % 'NA',
+			elif assoc[a][11] > 0.001:
 				print "%10.4f" % assoc[a][11],
 			else:
 				print "%10.2e" % assoc[a][11],
@@ -225,7 +231,9 @@ def writeAssocChiFisher(assoc, test, outfile, permP=None, permN=None, permNA=Non
 			fp.write("%8d" % assoc[a][i])
 		for i in range(4,7):
 			fp.write("%8.4f" % assoc[a][i])
-		if assoc[a][7] > 0.001:
+		if assoc[a][7] == 'NA':
+			fp.write("%10s" % 'NA')
+		elif assoc[a][7] > 0.001:
 			fp.write("%10.4f" % assoc[a][7])
 		else:
 			fp.write("%10.2e" % assoc[a][7])
@@ -234,14 +242,18 @@ def writeAssocChiFisher(assoc, test, outfile, permP=None, permN=None, permNA=Non
 			fp.write("%4d" % assoc[a][9])
 			for i in range(10, 13):
 				fp.write("%8.4f" % assoc[a][i])
-			if assoc[a][13] > 0.001:
+			if assoc[a][13] == 'NA':
+				fp.write("%10s" % 'NA')
+			elif assoc[a][13] > 0.001:
 				fp.write("%10.4f" % assoc[a][13])
 			else:
 				fp.write("%10.2e" % assoc[a][13])
 		else:
 			for i in range(8, 11):
-				fp.write("%6.4f" % assoc[a][i])
-			if assoc[a][11] > 0.001:
+				fp.write("%8.4f" % assoc[a][i])
+			if assoc[a][11] == 'NA':
+				fp.write("%10s" % 'NA')
+			elif assoc[a][11] > 0.001:
 				fp.write("%10.4f" % assoc[a][11])
 			else:
 				fp.write("%10.2e" % assoc[a][11])
@@ -267,7 +279,9 @@ def printAssocRaw(assoc, alleles, permP=None, permN=None, permNA=None):
 		print "%10s" % a,
 		print "%10.4f" % assoc[a][0],
 		print "%10d" % assoc[a][1],
-		if assoc[a][2] > 0.001:
+		if assoc[a][2] == 'NA':
+				print "%10s" % 'NA',
+		elif assoc[a][2] > 0.001:
 			print "%10.4f" % assoc[a][2],
 		else:
 			print "%10.2e" % assoc[a][2],
@@ -316,7 +330,9 @@ def writeAssocRaw(assoc, alleles, outfile, permP=None, permN=None, permNA=None):
 		fp.write("%10s" % a)
 		fp.write("%10.4f" % assoc[a][0])
 		fp.write("%10d" % assoc[a][1])
-		if assoc[a][2] > 0.001:
+		if assoc[a][2] == 'NA':
+			fp.write("%10s" % 'NA')
+		elif assoc[a][2] > 0.001:
 			fp.write("%10.4f" % assoc[a][2])
 		else:
 			fp.write("%10.2e" % assoc[a][2])
@@ -462,20 +478,26 @@ def printLogistic(assoc, permP=None, permN=None, permNA=None):
 			print "%8d" % assoc[a][i],
 		for i in range(4,7):
 			print "%8.4f" % assoc[a][i],
-		if assoc[a][7] > 0.001:
+		if assoc[a][7] == 'NA':
+			print "%10s" % 'NA',
+		elif assoc[a][7] > 0.001:
 			print "%10.4f" % assoc[a][7],
 		else:
 			print "%10.2e" % assoc[a][7],
 		for i in range(8, 11):
 				print "%8.4f" % assoc[a][i],
-		if assoc[a][11] > 0.001:
+		if assoc[a][11] == 'NA':
+			print "%10s" % 'NA',
+		elif assoc[a][11] > 0.001:
 			print "%10.4f" % assoc[a][11],
 		else:
 			print "%10.2e" % assoc[a][11],
 		if permP is None:
 			print
 		else:
-			if permP[a] > 0.001:
+			if permP[a] == 'NA':
+				print "%10s" % 'NA',
+			elif permP[a] > 0.001:
 				print "%10.4f" % permP[a],
 			else:
 				print "%10.2e" % permP[a],
@@ -502,20 +524,26 @@ def writeLogistic(assoc, outfile, permP=None, permN=None, permNA=None):
 			fp.write("%8d" % assoc[a][i])
 		for i in range(4,7):
 			fp.write("%8.4f" % assoc[a][i])
-		if assoc[a][7] > 0.001:
+		if assoc[a][7] == 'NA':
+			fp.write("%10s" % 'NA')
+		elif assoc[a][7] > 0.001:
 			fp.write("%10.4f" % assoc[a][7])
 		else:
 			fp.write("%10.2e" % assoc[a][7])
 		for i in range(8, 11):
 				fp.write("%8.4f" % assoc[a][i])
-		if assoc[a][11] > 0.001:
+		if assoc[a][11] == 'NA':
+			fp.write("%10s" % 'NA')
+		elif assoc[a][11] > 0.001:
 			fp.write("%10.4f" % assoc[a][11])
 		else:
 			fp.write("%10.2e" % assoc[a][11])
 		if permP is None:
 			fp.write('\n')
 		else:
-			if permP[a] > 0.001:
+			if permP[a] == 'NA':
+				fp.write("%10s" % 'NA')
+			elif permP[a] > 0.001:
 				fp.write("%10.4f" % permP[a])
 			else:
 				fp.write("%10.2e" % permP[a])
@@ -538,13 +566,17 @@ def printLinear(assoc, permP=None, permN=None, permNA=None):
 	for a in sorted(assoc.keys()):
 		print "%20s" % a,
 		print "%8.4f" % assoc[a][0],
-		if assoc[a][1] > 0.001:
+		if assoc[a][1] == 'NA':
+			print "%10s" % 'NA',
+		elif assoc[a][1] > 0.001:
 			print "%10.4f" % assoc[a][1],
 		else:
 			print "%10.2e" % assoc[a][1],
 		for i in range(2, 5):
 				print "%8.4f" % assoc[a][i],
-		if assoc[a][5] > 0.001:
+		if assoc[a][5] == 'NA':
+			print "%10s" % 'NA',
+		elif assoc[a][5] > 0.001:
 			print "%10.4f" % assoc[a][5],
 		else:
 			print "%10.2e" % assoc[a][5],
@@ -574,13 +606,17 @@ def writeLinear(assoc, outfile, permP=None, permN=None, permNA=None):
 	for a in sorted(assoc.keys()):
 		fp.write("%20s" % a)
 		fp.write("%8.4f" % assoc[a][0])
-		if assoc[a][1] > 0.001:
+		if assoc[a][1] == 'NA':
+			fp.write("%10s" % 'NA')
+		elif assoc[a][1] > 0.001:
 			fp.write("%10.4f" % assoc[a][1])
 		else:
 			fp.write("%10.2e" % assoc[a][1])
 		for i in range(2, 5):
 				fp.write("%8.4f" % assoc[a][i])
-		if assoc[a][5] > 0.001:
+		if assoc[a][5] == 'NA':
+			fp.write("%10s" % 'NA')
+		elif assoc[a][5] > 0.001:
 			fp.write("%10.4f" % assoc[a][5])
 		else:
 			fp.write("%10.2e" % assoc[a][5])
@@ -605,7 +641,9 @@ def printAssocDelta(assoc, perm=None):
 	for a in sorted(assoc.keys()):
 		print "%20s" % a,
 		print "%10.4f" % assoc[a][0],
-		if assoc[a][1] > 0.001:
+		if assoc[a][1] == 'NA':
+			print "%10s" % 'NA',
+		elif assoc[a][1] > 0.001:
 			print "%10.4f" % assoc[a][1],
 		else:
 			print "%10.2e" % assoc[a][1],
@@ -633,12 +671,16 @@ def writeAssocDelta(assoc, outfile, perm=None):
 	for a in sorted(assoc.keys()):
 		fp.write("%20s" % a)
 		fp.write("%10.4f" % assoc[a][0])
-		if assoc[a][1] > 0.001:
+		if assoc[a][1] == 'NA':
+			fp.write("%10s" % 'NA')
+		elif assoc[a][1] > 0.001:
 			fp.write("%10.4f" % assoc[a][1])
 		else:
 			fp.write("%10.2e" % assoc[a][1])
 		fp.write("%10.4f" % assoc[a][2])
-		if assoc[a][3] > 0.001:
+		if assoc[a][3] == 'NA':
+			fp.write("%10s" % 'NA')
+		elif assoc[a][3] > 0.001:
 			fp.write("%10.4f" % assoc[a][3])
 		else:
 			fp.write("%10.2e" % assoc[a][3])

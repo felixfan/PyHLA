@@ -279,7 +279,7 @@ def regressionLogistic(infile, digits, freq, adjust = 'FDR', exclude=None, covfi
 					if p == 'NA':
 						permNA[nname] += 1
 					else:
-						if assoc[nname] == 'NA':
+						if assoc[nname][7] == 'NA':
 							permNA[nname] += 1
 						else:
 							if p < assoc[nname][7]:
@@ -287,7 +287,7 @@ def regressionLogistic(infile, digits, freq, adjust = 'FDR', exclude=None, covfi
 							else:
 								permNL[nname] += 1
 		for a in assoc:
-			if assoc[a] == 'NA':
+			if assoc[a][7] == 'NA':
 				permP[a] = 'NA'
 			else:
 				if permNA[a] == perm:

@@ -8,15 +8,17 @@ import HLAassoc
 import HLAIO
 import HLAregression
 import HLAAA
+import HLAZygosity
+import HLAInteraction
 
 strattime = time.time()
 ###################################################
 parser = argparse.ArgumentParser(description='Python for HLA analysis', prog="PyHLA.py")
-parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.7')
+parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.9')
 parser.add_argument('-V', '--print', help='print output to screen', action='store_true')
 parser.add_argument('-i', '--infile', help='input file', required=True, type=str)
 parser.add_argument('-o', '--out', help='output file', default='output.txt')
-parser.add_argument('-d', '--digits', help='digits to test, default 4', default=4, type=int, choices=[2,4,6])
+parser.add_argument('-d', '--digit', help='digit to test, default 4', default=4, type=int, choices=[2,4,6])
 ### summary
 parser.add_argument('-s', '--summary', help='data summary', action='store_true')
 ### quality control
@@ -24,8 +26,8 @@ parser.add_argument('-q', '--qc', help='quality control', action='store_true')
 ### association analysis
 parser.add_argument('-a', '--assoc', help='association analysis', action='store_true')
 parser.add_argument('-m', '--model', help='genetic model, default allelic', default='allelic', type=str, choices=['allelic','dom','rec'])
-parser.add_argument('-t', '--test', help='statistical test method, default chisq', default='chisq', type=str, choices=['chisq','fisher','logistic','linear','raw','score', 'delta'])
-parser.add_argument('-f', '--freq', help='minimal frequency, default 0.05', default=0.05, type=float)
+parser.add_argument('-t', '--test', help='statistical test method, default fisher', default='fisher', type=str, choices=['fisher','chisq','logistic','linear','raw','score', 'delta'])
+parser.add_argument('-f', '--freq', help='minimal frequency, default 0', default=0, type=float)
 parser.add_argument('-j', '--adjust', help='p value correction, default FDR', default='FDR', type=str,choices=['FDR','FDR_BY','Bonferroni','Holm'])
 parser.add_argument('-e', '--exclude', help='exclude alleles file', type=str)
 parser.add_argument('-c', '--covar', help='covariants file', type=str)
@@ -37,6 +39,11 @@ parser.add_argument('-A', '--assocAA', help='amino acid association analysis', a
 parser.add_argument('-u', '--consensus', help='use the sonsensus amino acid senquence', action='store_true')
 ### amino acid alignment
 parser.add_argument('-w', '--align', help='amino acid senquence alignment', action='store_true')
+### zygosity
+parser.add_argument('-z', '--zygosity', help='zygosity test', action='store_true')
+parser.add_argument('-L', '--level', help='level to test', default='residue', type=str, choices=['residue', 'allele'])
+### Interaction
+parser.add_argument('-I', '--interaction', help='Interaction test', action='store_true')
 ###################################################
 aafile = 'aa.aln.txt'
 
@@ -44,7 +51,7 @@ args = vars(parser.parse_args())
 
 INFILE = args['infile']
 OUTFILE = args['out']
-DIGIT = args['digits']
+DIGIT = args['digit']
 PRINT =  args['print']
 
 SUMMARY = args['summary']
@@ -66,9 +73,14 @@ AAA = args['assocAA']
 CONSENSUS = args['consensus']
 
 ALN = args['align']
+
+ZYG = args['zygosity']
+LEVEL = args['level']
+
+INT = args['interaction']
 ###################################################
 print "@-------------------------------------------------------------@"
-print "|       PyHLA       |     v0.8      |        11 May 2015      |"
+print "|       PyHLA       |     v0.9      |        12 May 2015      |"
 print "|-------------------------------------------------------------|"
 print "|  (C) 2015 Felix Yanhui Fan, GNU General Public License, v2  |"
 print "|-------------------------------------------------------------|"
@@ -80,12 +92,12 @@ print "\t--infile", INFILE
 if PRINT:
 	print "\t--print"
 if SUMMARY:
-	print "\t--digits", DIGIT
+	print "\t--digit", DIGIT
 	print "\t--summary"
 elif QC:
 	print "\t--qc"
 elif ASSOC:
-	print "\t--digits", DIGIT
+	print "\t--digit", DIGIT
 	print "\t--assoc"
 	print "\t--test", TEST
 	if TEST == 'chisq' or TEST == 'fisher':
@@ -113,6 +125,19 @@ elif ALN:
 	print "\t--align"
 	if CONSENSUS:
 		print "\t--consensus"
+elif ZYG or INT:
+	if ZYG:
+		print "\t--zygosity"
+	elif INT:
+		print "\t--interaction"
+	print "\t--test", TEST
+	print "\t--level", LEVEL
+	if LEVEL == 'allele':
+		print "\t--digit", DIGIT
+		print "\t--freq", FREQ
+	else:
+		if CONSENSUS:
+			print "\t--consensus"
 print "\t--out", OUTFILE
 print
 ###################################################
@@ -215,9 +240,42 @@ elif AAA or ALN:
 		if PRINT:
 			HLAAA.printAA(myaln)
 		HLAAA.writeAA(myaln, OUTFILE)
+elif ZYG or INT:
+	if TEST != 'fisher' and 'chisq':
+		sys.exit("only 'fisher' and 'chisq' test can be used!")
+	if LEVEL == 'residue':
+		case, ctrl, caseGeno, ctrlGeno, ncase, nctrl = HLAAA.readGeno(INFILE)
+		seq = HLAAA.readAAseq(aafile)
+		alleles = HLAAA.keyDicts(case, ctrl)
+		myseq = HLAAA.getSeq(alleles, seq, CONSENSUS)
+		assoc = HLAAA.aaAssoc(case, ctrl, caseGeno, ctrlGeno, ncase, nctrl, myseq, TEST)
+		sig = {}
+		for k in assoc:
+			if assoc[k][4] != 'NA' and assoc[k][4] < 0.05:
+				sig[k] = 1
+		keys = sorted(sig.keys())
+		if ZYG: # zygosity test
+			ans = HLAZygosity.zygosityAA(keys, caseGeno, ctrlGeno, myseq, TEST)
+		else:    # interaction test
+			ans = HLAInteraction.interactAA(keys, caseGeno, ctrlGeno, myseq, TEST)
+	else:
+		assoc = HLAassoc.assocADRChiFisher(INFILE, DIGIT, FREQ, TEST)
+		caseGeno, ctrlGeno = HLAInteraction.readAlleleZygInteract(INFILE, DIGIT)
+		sig = {}
+		for k in assoc:
+			if assoc[k][7] != 'NA' and assoc[k][7] < 0.05:
+				sig[k] = 1
+		keys = sorted(sig.keys())
+		if  ZYG:
+			ans = HLAZygosity.zygosityAllele(keys, caseGeno, ctrlGeno, TEST)
+		else:
+			ans = HLAInteraction.interactAllele(keys, caseGeno, ctrlGeno, TEST)
+	for k in ans:
+		print k, ans
+
 else:
-	c = ('summary', 'qc', 'assoc', 'assocAA', 'align')
-	sys.exit("one of the following option must be used: \n%s\n%s\n%s\n%s\n%s\n" % c)
+	c = ('--summary', '--qc', '--assoc', '--assocAA', '--align', '--zygosity', '--interaction')
+	sys.exit("one of the following option must be used: \n\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n" % c)
 ###################################################
 usedtime = time.time() - strattime
 print "Time used:",

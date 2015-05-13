@@ -127,6 +127,8 @@ def getSeq(alleles, seq, consensus=True):
 					if allele in k:
 						aseq[allele] = seq[k]
 						break
+				if allele not in aseq:
+					print 'no sequence is avaiable for: %s' % allele
 	return aseq
 def aaAlign(case, ctrl, seq):
 	'''
@@ -196,16 +198,6 @@ def aaCount(Geno, seq, gene, pos):
 						else:
 							nn[seq[item[j]][pos]] = 1
 						lastaa = seq[item[j]][pos]
-				else:  # not exact same id, use the first match id
-					for aas in sorted(seq.keys()):
-						if item[j] in aas:
-							if len(seq[aas]) > pos:
-								if seq[aas][pos] in nn:
-									nn[seq[aas][pos]] += 1
-								else:
-									nn[seq[aas][pos]] = 1
-								lastaa = seq[aas][pos]
-							break
 				if item[j] != item[k]:
 					if item[k] in seq:
 						if len(seq[item[k]]) > pos:
@@ -214,16 +206,6 @@ def aaCount(Geno, seq, gene, pos):
 									nn[seq[item[k]][pos]] += 1
 								else:
 									nn[seq[item[k]][pos]] = 1
-					else:
-						for aas in sorted(seq.keys()):
-							if item[k] in aas:
-								if len(seq[aas]) > pos:
-									if lastaa != seq[aas][pos]:
-										if seq[aas][pos] in nn:
-											nn[seq[aas][pos]] += 1
-										else:
-											nn[seq[aas][pos]] = 1
-								break
 	return nn
 def aaAssoc(case, ctrl, caseGeno, ctrlGeno, ncase, nctrl, seq, test='fisher'):
 	'''
@@ -328,7 +310,9 @@ def printAAA(assoc):
 		print "%-20s" % (k[0] + '_' + str(k[1]) + '_' + k[2]),
 		for i in range(4):
 			print "%8d" % assoc[k][i],
-		if assoc[k][4] > 0.001:
+		if assoc[k][4] == 'NA':
+			print "%10s" % 'NA',
+		elif assoc[k][4] > 0.001:
 			print "%10.5f" % assoc[k][4],
 		else:
 			print "%10.2e" % assoc[k][4],
@@ -345,7 +329,9 @@ def writeAAA(assoc, outfile):
 		fw.write("%-20s" % (k[0] + '_' + str(k[1]) + '_' + k[2]))
 		for i in range(4):
 			fw.write("%8d" % assoc[k][i])
-		if assoc[k][4] > 0.001:
+		if assoc[k][4] == 'NA':
+			fw.write("%10s" % assoc[k][4])
+		elif assoc[k][4] > 0.001:
 			fw.write("%10.5f" % assoc[k][4])
 		else:
 			fw.write("%10.2e" % assoc[k][4])
