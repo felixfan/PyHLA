@@ -44,6 +44,7 @@ def threeTests(x, y, test = 'fisher'):
 	n3 = y[0]
 	n4 = y[1]
 	data = [[n1, n2], [n3, n4]]
+	OR1 = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
 	p1 = HLAInteraction.simpleTest(data, test)
 	# test2
 	n1 = x[2]
@@ -51,6 +52,7 @@ def threeTests(x, y, test = 'fisher'):
 	n3 = y[2]
 	n4 = y[1]
 	data = [[n1, n2], [n3, n4]]
+	OR2 = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
 	p2 = HLAInteraction.simpleTest(data, test)
 	# test 3
 	n1 = x[0]
@@ -58,8 +60,9 @@ def threeTests(x, y, test = 'fisher'):
 	n3 = y[0]
 	n4 = y[2]
 	data = [[n1, n2], [n3, n4]]
+	OR3 = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
 	p3 = HLAInteraction.simpleTest(data, test)
-	return [p1,p2,p3]
+	return [p1, p2, p3, OR1, OR2, OR3]
 def zygosityAA(keys, caseGeno, ctrlGeno, myseq, test):
 	ans = {}
 	for k in keys:
@@ -104,3 +107,49 @@ def zygosityAllele(keys, caseGeno, ctrlGeno, test):
 		ans[k] = ps
 	return ans
 ####################################################
+def printZygosity(ans, level):
+	print '%-20s' % 'ID',
+	for h in ('Hom_P', 'Het_P', 'Zyg_P'):
+		print '%12s' % h,
+	for h in ('Hom_OR', 'Het_OR', 'Zyg_OR'):
+		print '%8s' % h,
+	print
+	for k in sorted(ans.keys()):
+		if level == 'residue':
+			print '%-20s' % (k[0] + '_' + str(k[1]) + '_' + k[2]),
+		else:
+			print '%-20s' % k,
+		for i in range(3):
+			if ans[k][i] == 'NA':
+				print "%12s" % 'NA',
+			elif ans[k][i] > 0.001:
+				print "%12.4f" % ans[k][i],
+			else:
+				print "%12.2e" % ans[k][i],
+		for i in range(3,6):
+			print "%8.4f" % ans[k][i],
+		print
+def writeZygosity(ans, level, outfile):
+	fw = open(outfile, 'w')
+	fw.write('%-20s' % 'ID')
+	for h in ('Hom_P', 'Het_P', 'Zyg_P'):
+		fw.write('%12s' % h)
+	for h in ('Hom_OR', 'Het_OR', 'Zyg_OR'):
+		fw.write('%8s' % h)
+	fw.write('\n')
+	for k in sorted(ans.keys()):
+		if level == 'residue':
+			fw.write('%-20s' % (k[0] + '_' + str(k[1]) + '_' + k[2]))
+		else:
+			fw.write('%-20s' % k)
+		for i in range(3):
+			if ans[k][i] == 'NA':
+				fw.write("%12s" % 'NA')
+			elif ans[k][i] > 0.001:
+				fw.write("%12.4f" % ans[k][i])
+			else:
+				fw.write("%12.2e" % ans[k][i])
+		for i in range(3,6):
+			fw.write("%8.4f" % ans[k][i])
+		fw.write('\n')
+	fw.close()

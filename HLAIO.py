@@ -485,7 +485,10 @@ def printLogistic(assoc, permP=None, permN=None, permNA=None):
 		else:
 			print "%10.2e" % assoc[a][7],
 		for i in range(8, 11):
-				print "%8.4f" % assoc[a][i],
+				if assoc[a][i] == 'NA':
+					print "%8s" % 'NA',
+				else:
+					print "%8.4f" % assoc[a][i],
 		if assoc[a][11] == 'NA':
 			print "%10s" % 'NA',
 		elif assoc[a][11] > 0.001:
@@ -531,7 +534,10 @@ def writeLogistic(assoc, outfile, permP=None, permN=None, permNA=None):
 		else:
 			fp.write("%10.2e" % assoc[a][7])
 		for i in range(8, 11):
-				fp.write("%8.4f" % assoc[a][i])
+				if assoc[a][i] == 'NA':
+					fp.write("%8s" % 'NA')
+				else:
+					fp.write("%8.4f" % assoc[a][i])
 		if assoc[a][11] == 'NA':
 			fp.write("%10s" % 'NA')
 		elif assoc[a][11] > 0.001:

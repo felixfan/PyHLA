@@ -223,15 +223,15 @@ def regressionLogistic(infile, digits, freq, adjust = 'FDR', exclude=None, covfi
 		ps = [] # p value
 		ns = [] # allele name
 		for a in assoc:
-			if a.startswith(g) and assoc[a][7] != 'NA':  # p value at 7 col start from 0
-				ps.append(assoc[a][7])
-				ns.append(a)
+			if a.startswith(g):
+				if assoc[a][7] != 'NA':  # p value at 7 col start from 0
+					ps.append(assoc[a][7])
+					ns.append(a)
+				else:
+					assoc[a].append('NA')
 		cp = HLAassoc.adjustP(ps,adjust)
 		for i in range(len(ns)):
-			if assoc[ns[i]][7] != 'NA':
-				assoc[ns[i]].append(cp[i])
-			else:
-				assoc[ns[i]].append('NA')
+			assoc[ns[i]].append(cp[i])
 	### perm
 	if perm is None:
 		return assoc
@@ -272,7 +272,7 @@ def regressionLogistic(infile, digits, freq, adjust = 'FDR', exclude=None, covfi
 						geno9 = geno.ix[:, ['IID', 'PHT', allele]]
 						mydata = pd.merge(geno9, cov, on='IID', how='inner')
 					try:
-						lr = smf.logit(formula = myformula, data = geno).fit(maxiter=100, disp=False)
+						lr = smf.logit(formula = myformula, data = mydata).fit(maxiter=100, disp=False)
 						p = lr.pvalues[1]	
 					except:
 						p = 'NA'
@@ -390,16 +390,15 @@ def regressionLinear(infile, digits, freq, adjust = 'FDR', exclude=None, covfile
 		ps = [] # p value
 		ns = [] # allele name
 		for a in assoc:
-			if a.startswith(g) and assoc[a][1] != 'NA':  # p value at 1 col start from 0
-				ps.append(assoc[a][1])
-				ns.append(a)
+			if a.startswith(g):
+				if assoc[a][1] != 'NA':  # p value at 1 col start from 0
+					ps.append(assoc[a][1])
+					ns.append(a)
+				else:
+					assoc[a].append('NA')
 		cp = HLAassoc.adjustP(ps,adjust)
 		for i in range(len(ns)):
-			if assoc[ns[i]][1] != 'NA':
-				assoc[ns[i]].append(cp[i])
-			else:
-				assoc[ns[i]].append('NA')
-
+			assoc[ns[i]].append(cp[i])
 	### perm
 	if perm is None:
 		return assoc
@@ -463,3 +462,4 @@ def regressionLinear(infile, digits, freq, adjust = 'FDR', exclude=None, covfile
 				else:
 					permP[a] = 1.0 * (permN[a] + 1) / (perm + 1 - permNA[a])
 	return assoc, permP, permN, permNA
+##############################################################333

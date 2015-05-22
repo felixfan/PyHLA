@@ -231,3 +231,53 @@ def interactAllele(keys, caseGeno, ctrlGeno, test):
 				ans[newkey] = ps
 	return ans
 ####################################################
+def printInteract(assoc, level):
+	header = ('ID1', 'ID2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9','P10')
+	for h in header:
+		if h == 'ID1' or h == 'ID2':
+			print "%-12s" % h,
+		else:
+			print "%12s" % h,
+	print
+
+	for k in sorted(assoc.keys()):
+		if level == 'residue':
+			print "%-12s" % (k[0]+'_'+str(k[1])+'_'+k[2]), 
+			print "%-12s" % (k[3]+'_'+str(k[4])+'_'+k[5]),
+		else:
+			print "%-12s"  % k[0], 
+			print "%-12s" % k[1],
+		for i in range(2, len(assoc[k])):
+			if assoc[k][i] == 'NA':
+				print "%12s" % "NA",
+			elif assoc[k][i] > 0.001:
+				print "%12.4f" % assoc[k][i],
+			else:
+				print "%12.2e" % assoc[k][i],
+		print
+def writeInteract(assoc, level, outfile):
+	fw = open(outfile, 'w')
+	header = ('ID1', 'ID2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9','P10')
+	for h in header:
+		if h == 'ID1' or h == 'ID2':
+			fw.write("%-12s" % h)
+		else:
+			fw.write("%12s" % h)
+	fw.write('\n')
+
+	for k in sorted(assoc.keys()):
+		if level == 'residue':
+			fw.write("%-12s" % (k[0]+'_'+str(k[1])+'_'+k[2]))
+			fw.write("%-12s" % (k[3]+'_'+str(k[4])+'_'+k[5]))
+		else:
+			fw.write("%-12s"  % k[0])
+			fw.write("%-12s" % k[1])
+		for i in range(2, len(assoc[k])):
+			if assoc[k][i] == 'NA':
+				fw.write("%12s" % "NA")
+			elif assoc[k][i] > 0.001:
+				fw.write("%12.4f" % assoc[k][i])
+			else:
+				fw.write("%12.2e" % assoc[k][i])
+		fw.write('\n')
+	fw.close()

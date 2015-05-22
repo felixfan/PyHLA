@@ -125,18 +125,18 @@ def assocADRChiFisher(infile, digit, freq, test='chisq', model = 'allelic', adju
 		ps = []
 		ns = []
 		for a in assoc:
-			if a.startswith(g) and assoc[a][7] != 'NA':  # p value at 7 col start from 0
-				ps.append(assoc[a][7])
-				ns.append(a)
+			if a.startswith(g):
+				if assoc[a][7] != 'NA':  # p value at 7 col start from 0
+					ps.append(assoc[a][7])
+					ns.append(a)
+				else:
+					assoc[a].append('NA')
 		cp = adjustP(ps,adjust)
 		for i in range(len(ns)):
-			if assoc[ns[i]][7] != 'NA':
-				assoc[ns[i]].append(cp[i])
-			else:
-				assoc[ns[i]].append('NA')
-
+			assoc[ns[i]].append(cp[i])
 	if perm is None:
 		return assoc
+	### perm
 	else:
 		random.seed(seed)
 		permP = {}       # perm p value
@@ -460,16 +460,15 @@ def assocDelta(infile, digit, freq=0.05, adjust='FDR', exclude=None, perm=None, 
 		ps = []
 		ns = []
 		for a in assoc:
-			if a.startswith(g) and assoc[a][1] != 'NA':  # p value at 7 col start from 0
-				ps.append(assoc[a][1])
-				ns.append(a)
+			if a.startswith(g):
+				if  assoc[a][1] != 'NA':  # p value at 7 col start from 0
+					ps.append(assoc[a][1])
+					ns.append(a)
+				else:
+					assoc[a].append('NA')
 		cp = adjustP(ps,adjust)
 		for i in range(len(ns)):
-			if assoc[ns[i]][1] != 'NA':
-				assoc[ns[i]].append(cp[i])
-			else:
-				assoc[ns[i]].append('NA')
-
+			assoc[ns[i]].append(cp[i])		
 	### perm
 	if perm is None:
 		return assoc

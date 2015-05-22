@@ -186,6 +186,7 @@ def aaCount(Geno, seq, gene, pos):
 	count aa at a locus
 	'''
 	nn = {}
+	gpa = {} #gene_pos_aa
 	for item in Geno:
 		for j in range(0,len(item),2):
 			k = j + 1
@@ -195,8 +196,10 @@ def aaCount(Geno, seq, gene, pos):
 					if len(seq[item[j]]) > pos:
 						if seq[item[j]][pos] in nn:
 							nn[seq[item[j]][pos]] += 1
+							gpa[seq[item[j]][pos]].append(item[j])
 						else:
 							nn[seq[item[j]][pos]] = 1
+							gpa[seq[item[j]][pos]] = [item[j]]
 						lastaa = seq[item[j]][pos]
 				if item[j] != item[k]:
 					if item[k] in seq:
@@ -204,9 +207,11 @@ def aaCount(Geno, seq, gene, pos):
 							if lastaa != seq[item[k]][pos]:
 								if seq[item[k]][pos] in nn:
 									nn[seq[item[k]][pos]] += 1
+									gpa[seq[item[k]][pos]].append(item[k])
 								else:
 									nn[seq[item[k]][pos]] = 1
-	return nn
+									gpa[seq[item[k]][pos]] = [item[k]]
+	return nn, gpa
 def aaAssoc(case, ctrl, caseGeno, ctrlGeno, ncase, nctrl, seq, test='fisher'):
 	'''
 	amino acid association
@@ -225,8 +230,8 @@ def aaAssoc(case, ctrl, caseGeno, ctrlGeno, ncase, nctrl, seq, test='fisher'):
 			t12.pop('*', None)
 			keys = t12.keys()
 			if len(t12) > 1:
-				nn = aaCount(caseGeno, seq, gene, i)
-				nnc = aaCount(ctrlGeno, seq, gene, i)
+				nn, gpaP = aaCount(caseGeno, seq, gene, i)
+				nnc, gpaC = aaCount(ctrlGeno, seq, gene, i)
 				for key in keys:
 					if key in nn:
 						n1 = nn[key]
@@ -252,7 +257,14 @@ def aaAssoc(case, ctrl, caseGeno, ctrlGeno, ncase, nctrl, seq, test='fisher'):
 					else:
 						sys.exit("only 'fisher' or 'chisq' can be used for amino acid association!")
 					OR = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
-					assoc[(gene, i+1, key)]=[n1, n2, n3, n4, pvalue, OR]
+					# ALLELES HAS THIS AA
+					awr = []
+					if key in gpaP:
+						awr.extend(gpaP[key])
+					if key in gpaC:
+						awr.extend(gpaC[key])
+					awr = sorted(set(awr))
+					assoc[(gene, i+1, key)]=[n1, n2, n3, n4, pvalue, OR, awr]
 	return assoc
 ############################################################
 def printAA(aln):
@@ -305,7 +317,8 @@ def printAAA(assoc):
 	for h in ('A_case', 'B_case', 'A_ctrl', 'B_ctrl'):
 		print '%8s' % h,
 	print '%10s' % 'P',
-	print '%8s' % 'OR'
+	print '%8s' % 'OR',
+	print '\t%s' % 'ACR'
 	for k in sorted(assoc.keys()):
 		print "%-20s" % (k[0] + '_' + str(k[1]) + '_' + k[2]),
 		for i in range(4):
@@ -317,14 +330,24 @@ def printAAA(assoc):
 		else:
 			print "%10.2e" % assoc[k][4],
 		print "%8.2f" % assoc[k][5],
-		print
+		##
+		awrs = ''
+		si = 0
+		for it in assoc[k][6]:
+			if si > 0:
+				awrs += (',' + it)
+			else:
+				awrs = it
+			si += 1
+		print '\t%s' % awrs
 def writeAAA(assoc, outfile):
 	fw = open(outfile, 'w')
 	fw.write('%-20s' % 'ID')
 	for h in ('A_case', 'B_case', 'A_ctrl', 'B_ctrl'):
 		fw.write('%8s' % h)
 	fw.write('%10s' % 'P')
-	fw.write('%8s\n' % 'OR')
+	fw.write('%8s' % 'OR')
+	fw.write('\t%s\n' % 'ACR')
 	for k in sorted(assoc.keys()):
 		fw.write("%-20s" % (k[0] + '_' + str(k[1]) + '_' + k[2]))
 		for i in range(4):
@@ -335,6 +358,16 @@ def writeAAA(assoc, outfile):
 			fw.write("%10.5f" % assoc[k][4])
 		else:
 			fw.write("%10.2e" % assoc[k][4])
-		fw.write("%8.2f\n" % assoc[k][5])
+		fw.write("%8.2f" % assoc[k][5])
+		##
+		awrs = ''
+		si = 0
+		for it in assoc[k][6]:
+			if si > 0:
+				awrs += (',' + it)
+			else:
+				awrs = it
+			si += 1
+		fw.write("\t%s\n" % awrs)
 	fw.close()
 ############################################################

@@ -241,7 +241,7 @@ elif AAA or ALN:
 			HLAAA.printAA(myaln)
 		HLAAA.writeAA(myaln, OUTFILE)
 elif ZYG or INT:
-	if TEST != 'fisher' and 'chisq':
+	if TEST != 'fisher' and TEST != 'chisq':
 		sys.exit("only 'fisher' and 'chisq' test can be used!")
 	if LEVEL == 'residue':
 		case, ctrl, caseGeno, ctrlGeno, ncase, nctrl = HLAAA.readGeno(INFILE)
@@ -256,8 +256,14 @@ elif ZYG or INT:
 		keys = sorted(sig.keys())
 		if ZYG: # zygosity test
 			ans = HLAZygosity.zygosityAA(keys, caseGeno, ctrlGeno, myseq, TEST)
+			if PRINT:
+				HLAZygosity.printZygosity(ans, LEVEL)
+			HLAZygosity.writeZygosity(ans, LEVEL,OUTFILE)
 		else:    # interaction test
 			ans = HLAInteraction.interactAA(keys, caseGeno, ctrlGeno, myseq, TEST)
+			if PRINT:
+				HLAInteraction.printInteract(ans, LEVEL)
+			HLAInteraction.writeInteract(ans, LEVEL, OUTFILE)
 	else:
 		assoc = HLAassoc.assocADRChiFisher(INFILE, DIGIT, FREQ, TEST)
 		caseGeno, ctrlGeno = HLAInteraction.readAlleleZygInteract(INFILE, DIGIT)
@@ -268,11 +274,14 @@ elif ZYG or INT:
 		keys = sorted(sig.keys())
 		if  ZYG:
 			ans = HLAZygosity.zygosityAllele(keys, caseGeno, ctrlGeno, TEST)
+			if PRINT:
+				HLAZygosity.printZygosity(ans, LEVEL)
+			HLAZygosity.writeZygosity(ans, LEVEL,OUTFILE)
 		else:
 			ans = HLAInteraction.interactAllele(keys, caseGeno, ctrlGeno, TEST)
-	for k in ans:
-		print k, ans
-
+			if PRINT:
+				HLAInteraction.printInteract(ans, LEVEL)
+			HLAInteraction.writeInteract(ans, LEVEL, OUTFILE)
 else:
 	c = ('--summary', '--qc', '--assoc', '--assocAA', '--align', '--zygosity', '--interaction')
 	sys.exit("one of the following option must be used: \n\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n" % c)
