@@ -29,6 +29,7 @@ def tenTests(x, y, test = 'fisher'):
 	n3 = y[0] + y[1]
 	n4 = y[2] + y[3]
 	data = [[n1, n2], [n3, n4]]
+	OR1 = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
 	p1 = simpleTest(data, test)
 	# test2
 	n1 = x[0] + x[2]
@@ -36,6 +37,7 @@ def tenTests(x, y, test = 'fisher'):
 	n3 = y[0] + y[2]
 	n4 = y[1] + y[3]
 	data = [[n1, n2], [n3, n4]]
+	OR2 = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
 	p2 = simpleTest(data, test)
 	# test 3
 	n1 = x[0]
@@ -43,6 +45,7 @@ def tenTests(x, y, test = 'fisher'):
 	n3 = y[0]
 	n4 = y[2]
 	data = [[n1, n2], [n3, n4]]
+	OR3 = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
 	p3 = simpleTest(data, test)
 	# test 4
 	n1 = x[1]
@@ -50,6 +53,7 @@ def tenTests(x, y, test = 'fisher'):
 	n3 = y[1]
 	n4 = y[3]
 	data = [[n1, n2], [n3, n4]]
+	OR4 = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
 	p4 = simpleTest(data, test)
 	# test5
 	n1 = x[0]
@@ -57,6 +61,7 @@ def tenTests(x, y, test = 'fisher'):
 	n3 = y[0]
 	n4 = y[1]
 	data = [[n1, n2], [n3, n4]]
+	OR5 = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
 	p5 = simpleTest(data, test)
 	# test6
 	n1 = x[2]
@@ -64,6 +69,7 @@ def tenTests(x, y, test = 'fisher'):
 	n3 = y[2]
 	n4 = y[3]
 	data = [[n1, n2], [n3, n4]]
+	OR6 = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
 	p6 = simpleTest(data, test)
 	# test7
 	n1 = x[1]
@@ -71,6 +77,7 @@ def tenTests(x, y, test = 'fisher'):
 	n3 = y[1]
 	n4 = y[2]
 	data = [[n1, n2], [n3, n4]]
+	OR7 = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
 	p7 = simpleTest(data, test)
 	# test8
 	n1 = x[0]
@@ -78,6 +85,7 @@ def tenTests(x, y, test = 'fisher'):
 	n3 = y[0]
 	n4 = y[3]
 	data = [[n1, n2], [n3, n4]]
+	OR8 = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
 	p8 = simpleTest(data, test)
 	# test9
 	n1 = x[0]
@@ -85,6 +93,7 @@ def tenTests(x, y, test = 'fisher'):
 	n3 = x[2]
 	n4 = x[3]
 	data = [[n1, n2], [n3, n4]]
+	OR9 = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
 	p9 = simpleTest(data, test)
 	# test10
 	n1 = y[0]
@@ -92,8 +101,9 @@ def tenTests(x, y, test = 'fisher'):
 	n3 = y[2]
 	n4 = y[3]
 	data = [[n1, n2], [n3, n4]]
+	OR10 = (n1+0.5) * (n4+0.5) / (n2+0.5) / (n3+0.5)
 	p10 = simpleTest(data, test)
-	return [p1,p2,p3,p4,p5,p6,p7,p8,p9,p10]
+	return [p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,OR1,OR2,OR3,OR4,OR5,OR6,OR7,OR8,OR9,OR10]
 def readAlleleZygInteract(infile, digits):
 	caseGeno = []
 	ctrlGeno = []
@@ -238,6 +248,9 @@ def printInteract(assoc, level):
 			print "%-12s" % h,
 		else:
 			print "%12s" % h,
+	header2 = ('OR3', 'OR4', 'OR5', 'OR6', 'OR7', 'OR8', 'OR9','OR10')
+	for h in header2:
+		print "%10s" % h,
 	print
 
 	for k in sorted(assoc.keys()):
@@ -247,13 +260,18 @@ def printInteract(assoc, level):
 		else:
 			print "%-12s"  % k[0], 
 			print "%-12s" % k[1],
-		for i in range(2, len(assoc[k])):
+		for i in range(2, 10):
 			if assoc[k][i] == 'NA':
 				print "%12s" % "NA",
 			elif assoc[k][i] > 0.001:
 				print "%12.4f" % assoc[k][i],
 			else:
 				print "%12.2e" % assoc[k][i],
+		for i in range(12, len(assoc[k])):
+			if assoc[k][i] > 100:
+				print "%10.0f" %  assoc[k][i],
+			else:
+				print "%10.2f" %  assoc[k][i],
 		print
 def writeInteract(assoc, level, outfile):
 	fw = open(outfile, 'w')
@@ -263,6 +281,9 @@ def writeInteract(assoc, level, outfile):
 			fw.write("%-12s" % h)
 		else:
 			fw.write("%12s" % h)
+	header2 = ('OR3', 'OR4', 'OR5', 'OR6', 'OR7', 'OR8', 'OR9','OR10')
+	for h in header2:
+		fw.write("%10s" % h)
 	fw.write('\n')
 
 	for k in sorted(assoc.keys()):
@@ -272,12 +293,17 @@ def writeInteract(assoc, level, outfile):
 		else:
 			fw.write("%-12s"  % k[0])
 			fw.write("%-12s" % k[1])
-		for i in range(2, len(assoc[k])):
+		for i in range(2, 10):
 			if assoc[k][i] == 'NA':
 				fw.write("%12s" % "NA")
 			elif assoc[k][i] > 0.001:
 				fw.write("%12.4f" % assoc[k][i])
 			else:
 				fw.write("%12.2e" % assoc[k][i])
+		for i in range(12, len(assoc[k])):
+			if assoc[k][i] > 100:
+				fw.write("%10.0f" %  assoc[k][i])
+			else:
+				fw.write("%10.2f" %  assoc[k][i])
 		fw.write('\n')
 	fw.close()

@@ -14,15 +14,13 @@ import HLAInteraction
 strattime = time.time()
 ###################################################
 parser = argparse.ArgumentParser(description='Python for HLA analysis', prog="PyHLA.py")
-parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.9')
+parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0.0')
 parser.add_argument('-V', '--print', help='print output to screen', action='store_true')
-parser.add_argument('-i', '--infile', help='input file', required=True, type=str)
+parser.add_argument('-i', '--file', help='input file', required=True, type=str)
 parser.add_argument('-o', '--out', help='output file', default='output.txt')
 parser.add_argument('-d', '--digit', help='digit to test, default 4', default=4, type=int, choices=[2,4,6])
 ### summary
 parser.add_argument('-s', '--summary', help='data summary', action='store_true')
-### quality control
-parser.add_argument('-q', '--qc', help='quality control', action='store_true')
 ### association analysis
 parser.add_argument('-a', '--assoc', help='association analysis', action='store_true')
 parser.add_argument('-m', '--model', help='genetic model, default allelic', default='allelic', type=str, choices=['allelic','dom','rec'])
@@ -49,14 +47,12 @@ aafile = 'aa.aln.txt'
 
 args = vars(parser.parse_args())
 
-INFILE = args['infile']
+INFILE = args['file']
 OUTFILE = args['out']
 DIGIT = args['digit']
 PRINT =  args['print']
 
 SUMMARY = args['summary']
-
-QC = args['qc']
 
 ASSOC= args['assoc']
 TEST = args['test']
@@ -80,7 +76,7 @@ LEVEL = args['level']
 INT = args['interaction']
 ###################################################
 print "@-------------------------------------------------------------@"
-print "|       PyHLA       |     v0.9      |        12 May 2015      |"
+print "|       PyHLA       |     v1.0.0      |      26 May 2015      |"
 print "|-------------------------------------------------------------|"
 print "|  (C) 2015 Felix Yanhui Fan, GNU General Public License, v2  |"
 print "|-------------------------------------------------------------|"
@@ -94,8 +90,6 @@ if PRINT:
 if SUMMARY:
 	print "\t--digit", DIGIT
 	print "\t--summary"
-elif QC:
-	print "\t--qc"
 elif ASSOC:
 	print "\t--digit", DIGIT
 	print "\t--assoc"
@@ -154,8 +148,6 @@ if SUMMARY:
 		if PRINT:
 			HLAIO.printSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn, popCase, popCtrl, popP, popC)
 		HLAIO.writeSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn, OUTFILE, popCase, popCtrl, popP, popC)
-elif QC:
-	pass
 elif ASSOC:
 	if HLAcount.quantTrait(INFILE):
 		if TEST != 'linear':
@@ -283,8 +275,8 @@ elif ZYG or INT:
 				HLAInteraction.printInteract(ans, LEVEL)
 			HLAInteraction.writeInteract(ans, LEVEL, OUTFILE)
 else:
-	c = ('--summary', '--qc', '--assoc', '--assocAA', '--align', '--zygosity', '--interaction')
-	sys.exit("one of the following option must be used: \n\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n" % c)
+	c = ('--summary', '--assoc', '--assocAA', '--align', '--zygosity', '--interaction')
+	sys.exit("one of the following option must be used: \n\n%s\n%s\n%s\n%s\n%s\n%s\n" % c)
 ###################################################
 usedtime = time.time() - strattime
 print "Time used:",
