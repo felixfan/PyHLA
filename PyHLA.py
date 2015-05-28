@@ -76,7 +76,7 @@ LEVEL = args['level']
 INT = args['interaction']
 ###################################################
 print "@-------------------------------------------------------------@"
-print "|       PyHLA       |     v1.0.0      |      26 May 2015      |"
+print "|       PyHLA       |     v1.0.0      |      28 May 2015      |"
 print "|-------------------------------------------------------------|"
 print "|  (C) 2015 Felix Yanhui Fan, GNU General Public License, v2  |"
 print "|-------------------------------------------------------------|"
@@ -84,7 +84,7 @@ print "|    For documentation, citation & bug-report instructions:   |"
 print "|          http://felixfan.github.io/PyHLA                    |"
 print "@-------------------------------------------------------------@"
 print "\n\tOptions in effect:"
-print "\t--infile", INFILE
+print "\t--file", INFILE
 if PRINT:
 	print "\t--print"
 if SUMMARY:
