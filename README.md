@@ -5,17 +5,19 @@ Python for HLA analysis: summary, association analysis, zygosity test and intera
 
 * [Python 2.7](https://www.python.org/)
 * [pandas](http://pandas.pydata.org/)
+* [numpy](http://www.numpy.org/)
 * [SciPy](http://www.scipy.org/)
 * [StatsModels](http://statsmodels.sourceforge.net/)
 * [PyQt4](https://wiki.python.org/moin/PyQt4) (If you want to use the GUI)
 
 # Installation
 
-The easiest way to install Python and the required packages: install **FREE** scientific python distributions such as [Anaconda](http://continuum.io/downloads) and [Enthought Canopy](https://www.enthought.com/products/canopy/) which are already integrated the core scientific analytic and scientific Python packages such as `SciPy`, `pandas`, `StatsModels` and `PyQt4`.
+The easiest way to install Python and the required packages: install **FREE** scientific python distributions such as [Anaconda](http://continuum.io/downloads) and [Enthought Canopy](https://www.enthought.com/products/canopy/) which are already integrated the core scientific analytic and scientific Python packages such as `SciPy`, `pandas`, `numpy`, `StatsModels` and `PyQt4`.
 
 In case you want to install all package by yourself, you can try the following commands:
 ```
 sudo pip install pandas
+sudo pip install numpy
 sudo pip install git+http://github.com/scipy/scipy/
 sudo pip install statsmodels
 ```
@@ -37,4 +39,12 @@ Once you have installed PyHLA as well as the required packages, typing
 $ python PyHLA.py -h
 ```
 
-will print a list of all command-line options. Tutorials of PyHLA can be found in the [wiki](https://github.com/felixfan/PyHLA/wiki). 
+will print a list of all command-line options. 
+
+or, typing the following command to start the GUI.
+
+```
+python PyGUI.py
+```
+
+Tutorials of PyHLA can be found in the [wiki](https://github.com/felixfan/PyHLA/wiki). 
