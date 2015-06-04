@@ -48,3 +48,9 @@ python PyGUI.py
 ```
 
 Tutorials of PyHLA can be found in the [wiki](https://github.com/felixfan/PyHLA/wiki). 
+
+# License
+
+This project is licensed under GNU GPL v2.
+
+
