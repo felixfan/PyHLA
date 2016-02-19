@@ -1,0 +1,16 @@
+wget ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/A_prot.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/B_prot.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/C_prot.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/DPA_prot.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/DPB_prot.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/DQA_prot.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/DQB_prot.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/DRA_prot.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/DRB_prot.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/DMA_prot.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/DMB_prot.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/DOA_prot.txt
+wget ftp://ftp.ebi.ac.uk/pub/databases/ipd/imgt/hla/alignments/DOB_prot.txt
+python preALN.py
+rm *_prot.txt
+rm *.aln
