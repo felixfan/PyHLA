@@ -6,6 +6,8 @@ def oneline(infile, outfile):
 	pattern = re.compile(r'^(\w+)(\*){1}(\d+)(\:?)')
 	f = open(infile)
 	geno = {}
+	ref = ''
+	flag = False
 	for i in f:
 		i = i.strip()
 		if i and pattern.search(i):
@@ -14,20 +16,19 @@ def oneline(infile, outfile):
 				geno[fs[0]]=''
 			for j in range(1, len(fs)):
 				geno[fs[0]] += fs[j]
+			if not flag: # the first allele is reference
+				ref = fs[0]
+				flag = True
 	f.close()
 
 	f = open(outfile, 'w')
 	keys = sorted(geno.keys())
-	index = 0
-	ref = ''
 	for a in keys:
-		index += 1
-		if index == 1:
+		if a == ref:
 			f.write(a)
 			f.write('\t')
 			f.write(geno[a])
 			f.write('\n')
-			ref = geno[a]
 		else:
 			f.write(a)
 			f.write('\t')
@@ -36,11 +37,11 @@ def oneline(infile, outfile):
 				if tmp[k] == '*':
 					f.write('*')
 				elif tmp[k] == '-':
-					f.write(ref[k])
+					f.write(geno[ref][k])
 				else:
 					f.write(tmp[k])
-			if len(ref) > len(tmp):
-				for k in range(len(tmp),len(ref)):
+			if len(geno[ref]) > len(tmp):
+				for k in range(len(tmp),len(geno[ref])):
 					f.write('*')
 			f.write('\n')
 
