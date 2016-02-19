@@ -136,6 +136,8 @@ def aaAlign(case, ctrl, seq):
 	'''
 	aln = {}
 	alleles = keyDicts(case, ctrl)
+	if 'NA' in alleles:
+		alleles.remove('NA')
 	genes = getGenes(alleles)
 	for gene in genes:
 		tmp = []
@@ -218,6 +220,8 @@ def aaAssoc(case, ctrl, caseGeno, ctrlGeno, ncase, nctrl, seq, test='fisher'):
 	'''
 	assoc = {}
 	alleles = keyDicts(case,ctrl)
+	if 'NA' in alleles:
+		alleles.remove('NA')
 	genes = getGenes(alleles)
 	aln = aaAlign(case, ctrl, seq)
 	for gene in genes:
