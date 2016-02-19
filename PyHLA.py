@@ -221,6 +221,8 @@ elif AAA or ALN:
 	case, ctrl, caseGeno, ctrlGeno, ncase, nctrl = HLAAA.readGeno(INFILE)
 	seq = HLAAA.readAAseq(aafile)
 	alleles = HLAAA.keyDicts(case, ctrl)
+	if 'NA' in alleles:
+		alleles.remove('NA')
 	myseq = HLAAA.getSeq(alleles, seq, CONSENSUS)
 	if AAA:
 		assoc = HLAAA.aaAssoc(case, ctrl, caseGeno, ctrlGeno, ncase, nctrl, myseq, TEST)
@@ -239,6 +241,8 @@ elif ZYG or INT:
 		case, ctrl, caseGeno, ctrlGeno, ncase, nctrl = HLAAA.readGeno(INFILE)
 		seq = HLAAA.readAAseq(aafile)
 		alleles = HLAAA.keyDicts(case, ctrl)
+		if 'NA' in alleles:
+			alleles.remove('NA')
 		myseq = HLAAA.getSeq(alleles, seq, CONSENSUS)
 		assoc = HLAAA.aaAssoc(case, ctrl, caseGeno, ctrlGeno, ncase, nctrl, myseq, TEST)
 		sig = {}

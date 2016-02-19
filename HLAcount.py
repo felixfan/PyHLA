@@ -244,6 +244,8 @@ def hlaFreq(caseAlleles, ctrlAlleles, np, nc, nn):
 	temp.extend(caseAlleles.keys())
 	temp.extend(ctrlAlleles.keys())
 	alleles = sorted(set(temp))
+	if 'NA' in alleles:
+		alleles.remove('NA')
 	freq = {}
 	for allele in alleles:
 		ff = []
