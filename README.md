@@ -1,5 +1,5 @@
 ![](/fig/PyHLA.png)
-# PyHLA (v1.0.0)
+# PyHLA (v1.0.1)
 Python for HLA analysis: summary, association analysis, zygosity test and interaction test
 
 # Requirement
@@ -26,7 +26,7 @@ Please follow this [guild](http://pyqt.sourceforge.net/Docs/PyQt4/installation.h
 
 # Getting Started
 
-The latest PyHLA is available [here](https://github.com/felixfan/PyHLA/archive/v1.0.0.tar.gz).
+The latest PyHLA is available [here](https://github.com/felixfan/PyHLA/archive/v1.0.1.tar.gz).
 
 or, you can clone this repository via the command
 
