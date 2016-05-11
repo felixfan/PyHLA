@@ -4,7 +4,7 @@
 Table of Contents
 =================
 
-  * [PyHLA: tests for association between HLA alleles and diseases](#pyhla-tests-for-association-between-hla-alleles-and-diseases)
+
   * [1\. Introduction](#1-introduction)
   * [2\. Installation](#2-installation)
     * [2\.1 Install Python](#21-install-python)
