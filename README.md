@@ -166,7 +166,7 @@ If you failed to install PyQt4, please follow this [guild](http://pyqt.sourcefor
 
 ## 2.3 Getting Started
 
-The latest PyHLA is available [here](https://github.com/felixfan/PyHLA/archive/v1.1.tar.gz).
+The latest PyHLA is available [here](https://github.com/felixfan/PyHLA/archive/v1.1.0.tar.gz).
 
 or, you can clone this repository via the command
 
