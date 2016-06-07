@@ -14,7 +14,7 @@ class PyHLAWin(QtGui.QWidget):
 		self.height =600
 		self.setFixedSize(self.width, self.height)
 		self.move(200, 200)
-		self.setWindowTitle('PyHLA v1.0.0')
+		self.setWindowTitle('PyHLA v1.1.0')
 		#######################################################
 		self.gfile = ''
 		self.covfile = ''
@@ -55,9 +55,6 @@ class PyHLAWin(QtGui.QWidget):
 		self.testCombo.addItem("Fisher's exact test")
 		self.testCombo.addItem("Pearson chi-squared test")
 		self.testCombo.addItem("Logistic regression")
-		self.testCombo.addItem("Raw Test")
-		self.testCombo.addItem("Score Test")
-		self.testCombo.addItem("Delta Test")
 
 		self.digitLab = QtGui.QLabel('Digit')
 		self.digitCombo = QtGui.QComboBox()
@@ -145,6 +142,7 @@ class PyHLAWin(QtGui.QWidget):
 		### init (same as radio1_clicked)
 		self.radio1.setChecked(True)
 		self.frqEdit.setText('0.05')
+		# self.oEdit.setText('output.txt')
 
 		self.vLab.setEnabled(False)
 		self.vEdit.setEnabled(False)
@@ -174,11 +172,11 @@ class PyHLAWin(QtGui.QWidget):
 		self.consensusLabel.setEnabled(False)
 		self.consensusCB.setEnabled(False)
 		### Events and signals
-		self.connect(self.radio1,QtCore.SIGNAL("toggled(bool)"),self.radio1_clicked)
-		self.connect(self.radio2,QtCore.SIGNAL("toggled(bool)"),self.radio2_clicked)
-		self.connect(self.radio3,QtCore.SIGNAL("toggled(bool)"),self.radio3_clicked)
-		self.connect(self.radio4,QtCore.SIGNAL("toggled(bool)"),self.radio4_clicked)
-		self.connect(self.radio5,QtCore.SIGNAL("toggled(bool)"),self.radio4_clicked) # radio5 checked is the same (parameters used) as radio4 checked
+		self.connect(self.radio1, QtCore.SIGNAL("toggled(bool)"),self.radio1_clicked)
+		self.connect(self.radio2, QtCore.SIGNAL("toggled(bool)"),self.radio2_clicked)
+		self.connect(self.radio3, QtCore.SIGNAL("toggled(bool)"),self.radio3_clicked)
+		self.connect(self.radio4, QtCore.SIGNAL("toggled(bool)"),self.radio4_clicked)
+		self.connect(self.radio5, QtCore.SIGNAL("toggled(bool)"),self.radio4_clicked) # radio5 checked is the same (parameters used) as radio4 checked
 
 		self.gButton.clicked.connect(self.gButtonClicked)
 		self.gvButton.clicked.connect(self.gvButtonClicked)
@@ -246,9 +244,6 @@ class PyHLAWin(QtGui.QWidget):
 			self.testCombo.addItem("Fisher's exact test")
 			self.testCombo.addItem("Pearson chi-squared test")
 			self.testCombo.addItem("Logistic regression")
-			self.testCombo.addItem("Raw Test")
-			self.testCombo.addItem("Score Test")
-			self.testCombo.addItem("Delta Test")
 			self.digitLab.setEnabled(True)
 			self.digitCombo.setEnabled(True)
 			self.modelLab.setEnabled(True)
@@ -361,7 +356,7 @@ class PyHLAWin(QtGui.QWidget):
 		gdatatable.setHorizontalHeaderLabels(lheader)
 		for i in range(len(df.index)):
 			for j in range(len(df.columns)):
-				gdatatable.setItem(i,j,QtGui.QTableWidgetItem(str(df.iget_value(i, j))))
+				gdatatable.setItem(i,j,QtGui.QTableWidgetItem(str(df.iat[i, j])))
 		gdatatable.resizeColumnsToContents()
 		ghbox = QtGui.QHBoxLayout()
 		ghbox.addWidget(gdatatable)
@@ -383,7 +378,7 @@ class PyHLAWin(QtGui.QWidget):
 		vdatatable.setHorizontalHeaderLabels(list(df.columns.values))
 		for i in range(len(df.index)):
 			for j in range(len(df.columns)):
-				vdatatable.setItem(i,j,QtGui.QTableWidgetItem(str(df.iget_value(i, j))))
+				vdatatable.setItem(i,j,QtGui.QTableWidgetItem(str(df.iat[i, j])))
 		vdatatable.resizeColumnsToContents()
 		vhbox = QtGui.QHBoxLayout()
 		vhbox.addWidget(vdatatable)
@@ -400,15 +395,20 @@ class PyHLAWin(QtGui.QWidget):
 				self.vButton.setEnabled(True)
 				self.vvButton.setEnabled(True)
 				self.levelLab.setEnabled(False)
+				self.levelCombo.setEnabled(True)
+				self.levelCombo.clear()
+				self.levelCombo.addItems(["allele"])
 				self.levelCombo.setEnabled(False)
 				self.testLab.setEnabled(True)
 				self.testCombo.setEnabled(True)
 				self.testCombo.clear()
 				self.testCombo.addItem("Linear regression")
-				self.modelLab.setEnabled(False)
-				self.modelCombo.setEnabled(False)
+				self.modelLab.setEnabled(True)
+				self.modelCombo.setEnabled(True)
+				self.modelCombo.clear()
+				self.modelCombo.addItems(["additive", "dominant", "recessive"])
 				self.covLab.setEnabled(True)
-				self.covEdit.setEnabled(True)
+				self.covEdit.setEnabled(True)				
 			else:
 				self.vLab.setEnabled(False)
 				self.vEdit.setEnabled(False)
@@ -416,6 +416,8 @@ class PyHLAWin(QtGui.QWidget):
 				self.vvButton.setEnabled(False)
 				self.levelLab.setEnabled(True)
 				self.levelCombo.setEnabled(True)
+				self.levelCombo.clear()
+				self.levelCombo.addItems(["allele", "residue"])
 				self.testLab.setEnabled(True)
 				self.testCombo.setEnabled(True)
 				self.testCombo.clear()
@@ -423,50 +425,39 @@ class PyHLAWin(QtGui.QWidget):
 				self.testCombo.addItem("Pearson chi-squared test")
 				if str(self.levelCombo.currentText()) == 'allele':
 					self.testCombo.addItem("Logistic regression")
-					self.testCombo.addItem("Raw Test")
-					self.testCombo.addItem("Score Test")
-					self.testCombo.addItem("Delta Test")
-				self.modelLab.setEnabled(False)
-				self.modelCombo.setEnabled(False)
+				self.modelLab.setEnabled(True)
+				self.modelCombo.setEnabled(True)
+				self.modelCombo.clear()
+				self.modelCombo.addItems(["allelic", "dominant", "recessive"])
 				self.covLab.setEnabled(False)
-				self.covEdit.setEnabled(False)
-				if str(self.testCombo.currentText()) == 'Logistic regression':
-					self.vLab.setEnabled(True)
-					self.vEdit.setEnabled(True)
-					self.vButton.setEnabled(True)
-					self.vvButton.setEnabled(True)
-					self.covLab.setEnabled(True)
-					self.covEdit.setEnabled(True)
-				if str(self.testCombo.currentText()) == "Pearson chi-squared test" or str(self.testCombo.currentText()) == "Fisher's exact test":
-					if str(self.levelCombo.currentText()) == 'allele':
-						self.modelLab.setEnabled(True)
-						self.modelCombo.setEnabled(True)
-					else:
-						self.modelLab.setEnabled(False)
-						self.modelCombo.setEnabled(False)
+				self.covEdit.setEnabled(False)					
 	def levelCombo_chosen(self, text):
 		if self.radio2.isChecked(): # for assoc only
 			if text == 'allele':
+				self.testCombo.clear()
+				self.testCombo.addItem("Fisher's exact test")
+				self.testCombo.addItem("Pearson chi-squared test")
+				self.testCombo.addItem("Logistic regression")
 				self.digitLab.setEnabled(True)
 				self.digitCombo.setEnabled(True)
 				self.modelLab.setEnabled(True)
 				self.modelCombo.setEnabled(True)
+				self.modelCombo.clear()
+				self.modelCombo.addItems(["allelic", "dominant", "recessive"])
 				self.adjLab.setEnabled(True)
 				self.adjCombo.setEnabled(True)
 				self.frqLab.setEnabled(True)
 				self.frqEdit.setEnabled(True)
 				self.permLab.setEnabled(True)
 				self.permEdit.setEnabled(True)
+				self.consensusLabel.setEnabled(False)
+				self.consensusCB.setEnabled(False)
+				self.covLab.setEnabled(False)
+				self.covEdit.setEnabled(False)
+			else: # residue
 				self.testCombo.clear()
 				self.testCombo.addItem("Fisher's exact test")
 				self.testCombo.addItem("Pearson chi-squared test")
-				self.testCombo.addItem("Logistic regression")
-				self.testCombo.addItem("Raw Test")
-				self.testCombo.addItem("Score Test")
-				self.testCombo.addItem("Delta Test")
-				self.consensusLabel.setEnabled(False)
-				self.consensusCB.setEnabled(False)
-			else: # residue
 				self.digitLab.setEnabled(False)
 				self.digitCombo.setEnabled(False)
 				self.modelLab.setEnabled(False)
@@ -477,9 +468,8 @@ class PyHLAWin(QtGui.QWidget):
 				self.frqEdit.setEnabled(False)
 				self.permLab.setEnabled(False)
 				self.permEdit.setEnabled(False)
-				self.testCombo.clear()
-				self.testCombo.addItem("Fisher's exact test")
-				self.testCombo.addItem("Pearson chi-squared test")
+				self.covLab.setEnabled(False)
+				self.covEdit.setEnabled(False)
 				self.consensusLabel.setEnabled(True)
 				self.consensusCB.setEnabled(True)
 		elif self.radio4.isChecked() or self.radio5.isChecked(): # zyg & inter
@@ -500,8 +490,10 @@ class PyHLAWin(QtGui.QWidget):
 	def testCombo_chosen(self, text):
 		if self.radio2.isChecked(): # for assoc only
 			if text == 'Logistic regression' or text == 'Linear regression':
-				self.modelLab.setEnabled(False)
-				self.modelCombo.setEnabled(False)
+				self.modelLab.setEnabled(True)
+				self.modelCombo.setEnabled(True)
+				self.modelCombo.clear()
+				self.modelCombo.addItems(["additive", "dominant", "recessive"])
 				self.vLab.setEnabled(True)
 				self.vEdit.setEnabled(True)
 				self.vButton.setEnabled(True)
@@ -511,6 +503,8 @@ class PyHLAWin(QtGui.QWidget):
 				if str(self.levelCombo.currentText()) == 'allele':
 					self.modelLab.setEnabled(True)
 					self.modelCombo.setEnabled(True)
+					self.modelCombo.clear()
+					self.modelCombo.addItems(["allelic", "dominant", "recessive"])
 				else:
 					self.modelLab.setEnabled(False)
 					self.modelCombo.setEnabled(False)
@@ -519,10 +513,7 @@ class PyHLAWin(QtGui.QWidget):
 				self.vButton.setEnabled(False)
 				self.vvButton.setEnabled(False)
 				self.covLab.setEnabled(False)
-				self.covEdit.setEnabled(False)	
-			if text == 'Raw Test' or text == 'Score Test' or text == 'Delta Test':
-				self.modelLab.setEnabled(False)
-				self.modelCombo.setEnabled(False)
+				self.covEdit.setEnabled(False)
 	def runButtonClicked(self):
 		if self.radio1.isChecked():
 			comm = 'python PyHLA.py --summary --file '
@@ -550,25 +541,17 @@ class PyHLAWin(QtGui.QWidget):
 					testM = 'logistic'
 				elif testStr == 'Linear regression':
 					testM = 'linear'
-				elif testStr == 'Raw Test':
-					testM = 'raw'
-				elif testStr == 'Score Test':
-					testM = 'score'
-				elif testStr == 'Delta Test':
-					testM = 'delta'
 				comm += ' --test '
 				comm += testM
-				if testM == 'chisq' or testM == 'fisher':
-					model = str(self.modelCombo.currentText())
-					comm += ' --model '
-					comm += model
+				model = str(self.modelCombo.currentText())
+				comm += ' --model '
+				comm += model
 				freq = str(self.frqEdit.text())
 				comm += ' --freq '
 				comm += freq
 				adjust = str(self.adjCombo.currentText())
-				if testM != 'score' and testM != 'raw':
-					comm += ' --adjust '
-					comm += adjust
+				comm += ' --adjust '
+				comm += adjust
 				if testM == 'logistic' or testM == 'linear':
 					if self.covfile:
 						comm += ' --covar '
@@ -583,7 +566,7 @@ class PyHLAWin(QtGui.QWidget):
 				comm += str(self.outfile)
 				os.system(comm)
 			else: # residue
-				comm = 'python PyHLA.py --assocAA --file '
+				comm = 'python PyHLA.py --assoc-AA --file '
 				comm += str(self.gfile)
 				testStr = str(self.testCombo.currentText())
 				testM = ''
@@ -670,7 +653,7 @@ class PyHLAWin(QtGui.QWidget):
 			odatatable.setHorizontalHeaderLabels(list(df.columns.values))
 			for i in range(len(df.index)):
 				for j in range(len(df.columns)):
-					odatatable.setItem(i,j,QtGui.QTableWidgetItem(str(df.iget_value(i, j))))
+					odatatable.setItem(i,j,QtGui.QTableWidgetItem(str(df.iat[i, j])))
 			odatatable.resizeColumnsToContents()
 			ohbox = QtGui.QHBoxLayout()
 			ohbox.addWidget(odatatable)
