@@ -1,8 +1,109 @@
 # PyHLA: tests for association between HLA alleles and diseases
 
+Jun 7, 2016  
+
 Table of Contents
 =================
 
+  * [1\. Introduction](#1-introduction)
+  * [2\. Installation](#2-installation)
+    * [2\.1 Install Python](#21-install-python)
+    * [2\.2 Install Python Modules](#22-install-python-modules)
+    * [2\.3 Getting Started](#23-getting-started)
+  * [3\. Tutorials](#3-tutorials)
+    * [3\.1 Input](#31-input)
+      * [3\.1\.1 HLA Types File (\-\-input)](#311-hla-types-file---input)
+      * [3\.1\.2 Exclude Alleles File (\-\-exclude)](#312-exclude-alleles-file---exclude)
+      * [3\.1\.3 Covariates file (\-\-covar)](#313-covariates-file---covar)
+    * [3\.2 Data Summary](#32-data-summary)
+      * [3\.2\.1 Options](#321-options)
+        * [3\.2\.1\.1 HLA Types File (\-\-input)](#3211-hla-types-file---input)
+        * [3\.2\.1\.2 Data Summary (\-\-summary)](#3212-data-summary---summary)
+        * [3\.2\.1\.3 Digits resolution (\-\-digit)](#3213-digits-resolution---digit)
+        * [3\.2\.1\.4 Output file name (\-\-out)](#3214-output-file-name---out)
+        * [3\.2\.1\.5 Print output to screen (\-\-print)](#3215-print-output-to-screen---print)
+      * [3\.2\.2 Example](#322-example)
+    * [3\.3 Allele Association Analysis](#33-allele-association-analysis)
+      * [3\.3\.1 Options](#331-options)
+        * [3\.3\.1\.1 HLA Types File (\-\-input)](#3311-hla-types-file---input)
+        * [3\.3\.1\.2 Allele Association Analysis (\-\-assoc)](#3312-allele-association-analysis---assoc)
+        * [3\.3\.1\.3 Digits resolution (\-\-digit)](#3313-digits-resolution---digit)
+        * [3\.3\.1\.4 Methods for association test (\-\-test)](#3314-methods-for-association-test---test)
+        * [3\.3\.1\.5 Genetic model to test (\-\-model)](#3315-genetic-model-to-test---model)
+        * [3\.3\.1\.6 Minimal allele/allele group frequency (\-\-freq)](#3316-minimal-alleleallele-group-frequency---freq)
+        * [3\.3\.1\.7 Adjustment for multiple testing (\-\-adjust)](#3317-adjustment-for-multiple-testing---adjust)
+        * [3\.3\.1\.8 Output file name (\-\-out)](#3318-output-file-name---out)
+        * [3\.3\.1\.9 Print output to screen (\-\-print)](#3319-print-output-to-screen---print)
+        * [3\.3\.1\.10 Permutation (\-\-perm)](#33110-permutation---perm)
+        * [3\.1\.1\.11 Random seed (\-\-seed)](#31111-random-seed---seed)
+        * [3\.1\.1\.12 Exclude Alleles (\-\-exclude)](#31112-exclude-alleles---exclude)
+        * [3\.3\.1\.13 Covariates file (\-\-covar)](#33113-covariates-file---covar)
+        * [3\.3\.1\.14 Covariates name (\-\-covar\-name)](#33114-covariates-name---covar-name)
+      * [3\.3\.2 Allele Association Analysis Examples](#332-allele-association-analysis-examples)
+        * [3\.3\.2\.1 Output of Allele Association Analysis](#3321-output-of-allele-association-analysis)
+        * [3\.3\.2\.2 Disease trait (Case/Control Study)](#3322-disease-trait-casecontrol-study)
+          * [3\.3\.2\.2\.1 Fisher's exact test and Pearson's chi\-squared test](#33221-fishers-exact-test-and-pearsons-chi-squared-test)
+          * [3\.3\.2\.2\.2 Logistic Regression](#33222-logistic-regression)
+        * [3\.3\.2\.3 Quantitative trait](#3323-quantitative-trait)
+          * [3\.3\.2\.3\.1 Linear Regression](#33231-linear-regression)
+    * [3\.4 Amino Acid Alignment](#34-amino-acid-alignment)
+      * [3\.4\.1 Options](#341-options)
+        * [3\.4\.1\.1 HLA Types File (\-\-input)](#3411-hla-types-file---input)
+        * [3\.4\.1\.2 Amino Acid Alignment (\-\-align)](#3412-amino-acid-alignment---align)
+        * [3\.4\.1\.3 Output file name (\-\-out)](#3413-output-file-name---out)
+        * [3\.4\.1\.4 Print output to screen (\-\-print)](#3414-print-output-to-screen---print)
+        * [3\.4\.1\.5 Consensus Amino Acid Sequence \-\-consensus](#3415-consensus-amino-acid-sequence---consensus)
+    * [3\.5 Amino Acid Association](#35-amino-acid-association)
+      * [3\.5\.1 Options](#351-options)
+        * [3\.5\.1\.1 HLA Types File (\-\-input)](#3511-hla-types-file---input)
+        * [3\.5\.1\.2 Amino Acid Association (\-\-assoc\-AA)](#3512-amino-acid-association---assoc-aa)
+        * [3\.5\.1\.3 Methods for association test (\-\-test)](#3513-methods-for-association-test---test)
+        * [3\.5\.1\.4 Output file name (\-\-out)](#3514-output-file-name---out)
+        * [3\.5\.1\.5 Print output to screen (\-\-print)](#3515-print-output-to-screen---print)
+        * [3\.5\.1\.6 Consensus Amino Acid Sequence \-\-consensus](#3516-consensus-amino-acid-sequence---consensus)
+      * [3\.5\.2 Example of the Output](#352-example-of-the-output)
+    * [3\.6 Zygosity Test](#36-zygosity-test)
+      * [3\.6\.1 Options](#361-options)
+        * [3\.6\.1\.1 HLA Types File (\-\-input)](#3611-hla-types-file---input)
+        * [3\.6\.1\.2 Zygosity test (\-\-zygosity)](#3612-zygosity-test---zygosity)
+        * [3\.6\.1\.3 Methods for zygosity test (\-\-test)](#3613-methods-for-zygosity-test---test)
+        * [3\.6\.1\.4 Level to test (\-\-level)](#3614-level-to-test---level)
+        * [3\.6\.1\.5 Output file name (\-\-out)](#3615-output-file-name---out)
+        * [3\.6\.1\.6 Print output to screen (\-\-print)](#3616-print-output-to-screen---print)
+        * [3\.6\.1\.7 Consensus sequence (\-\-consensus)](#3617-consensus-sequence---consensus)
+        * [3\.6\.1\.8 Digits resolution (\-\-digit)](#3618-digits-resolution---digit)
+        * [3\.6\.1\.9 Minimal allele/allele group frequency (\-\-freq)](#3619-minimal-alleleallele-group-frequency---freq)
+      * [3\.6\.2 Examples](#362-examples)
+        * [3\.6\.2\.1 Residue level](#3621-residue-level)
+        * [3\.6\.2\.2 Allele level](#3622-allele-level)
+    * [3\.7 Interaction Test](#37-interaction-test)
+      * [3\.7\.1 Options](#371-options)
+        * [3\.7\.1\.1 HLA Types File (\-\-input)](#3711-hla-types-file---input)
+        * [3\.7\.1\.2 Interaction test (\-\-interaction)](#3712-interaction-test---interaction)
+        * [3\.7\.1\.3 Test to be used (\-\-test)](#3713-test-to-be-used---test)
+        * [3\.7\.1\.4 Level to test (\-\-level)](#3714-level-to-test---level)
+        * [3\.7\.1\.5 Output file name (\-\-out)](#3715-output-file-name---out)
+        * [3\.7\.1\.6 Print output to screen (\-\-print)](#3716-print-output-to-screen---print)
+        * [3\.7\.1\.7 Consensus sequence (\-\-consensus)](#3717-consensus-sequence---consensus)
+        * [3\.7\.1\.8 Digits resolution (\-\-digit)](#3718-digits-resolution---digit)
+        * [3\.7\.1\.9 Minimal allele/allele group frequency (\-\-freq)](#3719-minimal-alleleallele-group-frequency---freq)
+      * [3\.7\.2 Examples](#372-examples)
+        * [3\.7\.2\.1 Residue level](#3721-residue-level)
+        * [3\.7\.2\.2 Allele level](#3722-allele-level)
+  * [4\. License](#4-license)
+  * [5\. Citation](#5-citation)
+  * [6\. References](#6-references)
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc.go)
+alicefelixs-MacBook-Air:manual alicefelix$ ls
+README v1.02.md   README.html   README_PDF.Rmd    fig     manual v1.02.pdf
+README.Rmd    README.md   README_PDF.pdf    flowchart
+alicefelixs-MacBook-Air:manual alicefelix$ gh-md-toc README.md 
+
+Table of Contents
+=================
+
+  * [PyHLA: tests for association between HLA alleles and diseases](#pyhla-tests-for-association-between-hla-alleles-and-diseases)
   * [1\. Introduction](#1-introduction)
   * [2\. Installation](#2-installation)
     * [2\.1 Install Python](#21-install-python)
@@ -496,20 +597,15 @@ PermNA        Number of permutation with NA statistic
 
 Fisher's exact test is the default option.
 ```
-python PyHLA.py --input example/input0.txt --assoc --digit 4 
-      --freq 0.05 --adjust FDR
-python PyHLA.py --input example/input0.txt --assoc --digit 4 
-      --freq 0.05 --adjust FDR --perm 10000
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --perm 10000
 ```
 
 Pearson's chi-squared test
 ```
-python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 
-      --adjust FDR --test chisq
-python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 
-      --adjust FDR --test chisq --model dom
-python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 
-      --adjust FDR --test chisq --model rec
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test chisq
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test chisq --model dom
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test chisq --model rec
 ```
 
 For each allele, a 2 X 2 coningency table contains the count of this allele and the count of the other alleles in the same gene in cases and controls was created. The total number of test is the number of alleles have frequency in cases or controls higher the the threshold specified by option `--freq`.
@@ -519,12 +615,9 @@ The output includes: `Allele`, `A_case`, `B_case`, `A_ctrl`, `B_ctrl`, `F_case`,
 ##### 3.3.2.2.2 Logistic Regression
 
 ```
-python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 
-       --adjust FDR --test logistic --model additive
-python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 
-       --adjust FDR --test logistic --model additive --perm 10000
-python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR 
-       --test logistic --model additive --covar example/covar.txt --covar-name age,bmi
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test logistic --model additive
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test logistic --model additive --perm 10000
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test logistic --model additive --covar example/covar.txt --covar-name age,bmi
 ```
 
 The total number of test is the number of alleles have frequency in cases or controls higher the the threshold specified by option `--freq`.
@@ -536,12 +629,9 @@ The output includes: `Allele`, `A_case`, `B_case`, `A_ctrl`, `B_ctrl`, `F_case`,
 ##### 3.3.2.3.1 Linear Regression
 
 ```
-python PyHLA.py --input example/input1.txt --assoc --digit 4 --freq 0.05 
-      --adjust FDR --test linear --model additive
-python PyHLA.py --input example/input1.txt --assoc --digit 4 --freq 0.05 
-      --adjust FDR --test linear --model additive --perm 10000
-python PyHLA.py --input example/input1.txt --assoc --digit 4 --freq 0.05 --adjust FDR 
-      --test linear --model additive --covar example/covar.txt --covar-name sex,age,bmi
+python PyHLA.py --input example/input1.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test linear --model additive
+python PyHLA.py --input example/input1.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test linear --model additive --perm 10000
+python PyHLA.py --input example/input1.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test linear --model additive --covar example/covar.txt --covar-name sex,age,bmi
 ```
 
 The total number of test is the number of alleles have frequency  higher the the threshold specified by option `--freq`.
