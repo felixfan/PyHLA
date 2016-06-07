@@ -1,9 +1,7 @@
 # PyHLA: tests for association between HLA alleles and diseases
 
-
 Table of Contents
 =================
-
 
   * [1\. Introduction](#1-introduction)
   * [2\. Installation](#2-installation)
@@ -12,12 +10,12 @@ Table of Contents
     * [2\.3 Getting Started](#23-getting-started)
   * [3\. Tutorials](#3-tutorials)
     * [3\.1 Input](#31-input)
-      * [3\.1\.1 HLA Types File (\-\-file)](#311-hla-types-file---file)
+      * [3\.1\.1 HLA Types File (\-\-input)](#311-hla-types-file---input)
       * [3\.1\.2 Exclude Alleles File (\-\-exclude)](#312-exclude-alleles-file---exclude)
       * [3\.1\.3 Covariates file (\-\-covar)](#313-covariates-file---covar)
     * [3\.2 Data Summary](#32-data-summary)
       * [3\.2\.1 Options](#321-options)
-        * [3\.2\.1\.1 HLA Types File (\-\-file)](#3211-hla-types-file---file)
+        * [3\.2\.1\.1 HLA Types File (\-\-input)](#3211-hla-types-file---input)
         * [3\.2\.1\.2 Data Summary (\-\-summary)](#3212-data-summary---summary)
         * [3\.2\.1\.3 Digits resolution (\-\-digit)](#3213-digits-resolution---digit)
         * [3\.2\.1\.4 Output file name (\-\-out)](#3214-output-file-name---out)
@@ -25,7 +23,7 @@ Table of Contents
       * [3\.2\.2 Example](#322-example)
     * [3\.3 Allele Association Analysis](#33-allele-association-analysis)
       * [3\.3\.1 Options](#331-options)
-        * [3\.3\.1\.1 HLA Types File (\-\-file)](#3311-hla-types-file---file)
+        * [3\.3\.1\.1 HLA Types File (\-\-input)](#3311-hla-types-file---input)
         * [3\.3\.1\.2 Allele Association Analysis (\-\-assoc)](#3312-allele-association-analysis---assoc)
         * [3\.3\.1\.3 Digits resolution (\-\-digit)](#3313-digits-resolution---digit)
         * [3\.3\.1\.4 Methods for association test (\-\-test)](#3314-methods-for-association-test---test)
@@ -38,28 +36,25 @@ Table of Contents
         * [3\.1\.1\.11 Random seed (\-\-seed)](#31111-random-seed---seed)
         * [3\.1\.1\.12 Exclude Alleles (\-\-exclude)](#31112-exclude-alleles---exclude)
         * [3\.3\.1\.13 Covariates file (\-\-covar)](#33113-covariates-file---covar)
-        * [3\.3\.1\.14 Covariates name (\-\-covarname)](#33114-covariates-name---covarname)
+        * [3\.3\.1\.14 Covariates name (\-\-covar\-name)](#33114-covariates-name---covar-name)
       * [3\.3\.2 Allele Association Analysis Examples](#332-allele-association-analysis-examples)
         * [3\.3\.2\.1 Output of Allele Association Analysis](#3321-output-of-allele-association-analysis)
         * [3\.3\.2\.2 Disease trait (Case/Control Study)](#3322-disease-trait-casecontrol-study)
           * [3\.3\.2\.2\.1 Fisher's exact test and Pearson's chi\-squared test](#33221-fishers-exact-test-and-pearsons-chi-squared-test)
           * [3\.3\.2\.2\.2 Logistic Regression](#33222-logistic-regression)
-          * [3\.3\.2\.2\.3 Raw Test](#33223-raw-test)
-          * [3\.3\.2\.2\.4 Score U Test](#33224-score-u-test)
-          * [3\.3\.2\.2\.5 Delta Test](#33225-delta-test)
         * [3\.3\.2\.3 Quantitative trait](#3323-quantitative-trait)
           * [3\.3\.2\.3\.1 Linear Regression](#33231-linear-regression)
     * [3\.4 Amino Acid Alignment](#34-amino-acid-alignment)
       * [3\.4\.1 Options](#341-options)
-        * [3\.4\.1\.1 HLA Types File (\-\-file)](#3411-hla-types-file---file)
+        * [3\.4\.1\.1 HLA Types File (\-\-input)](#3411-hla-types-file---input)
         * [3\.4\.1\.2 Amino Acid Alignment (\-\-align)](#3412-amino-acid-alignment---align)
         * [3\.4\.1\.3 Output file name (\-\-out)](#3413-output-file-name---out)
         * [3\.4\.1\.4 Print output to screen (\-\-print)](#3414-print-output-to-screen---print)
         * [3\.4\.1\.5 Consensus Amino Acid Sequence \-\-consensus](#3415-consensus-amino-acid-sequence---consensus)
     * [3\.5 Amino Acid Association](#35-amino-acid-association)
       * [3\.5\.1 Options](#351-options)
-        * [3\.5\.1\.1 HLA Types File (\-\-file)](#3511-hla-types-file---file)
-        * [3\.5\.1\.2 Amino Acid Association (\-\-assocAA)](#3512-amino-acid-association---assocaa)
+        * [3\.5\.1\.1 HLA Types File (\-\-input)](#3511-hla-types-file---input)
+        * [3\.5\.1\.2 Amino Acid Association (\-\-assoc\-AA)](#3512-amino-acid-association---assoc-aa)
         * [3\.5\.1\.3 Methods for association test (\-\-test)](#3513-methods-for-association-test---test)
         * [3\.5\.1\.4 Output file name (\-\-out)](#3514-output-file-name---out)
         * [3\.5\.1\.5 Print output to screen (\-\-print)](#3515-print-output-to-screen---print)
@@ -67,7 +62,7 @@ Table of Contents
       * [3\.5\.2 Example of the Output](#352-example-of-the-output)
     * [3\.6 Zygosity Test](#36-zygosity-test)
       * [3\.6\.1 Options](#361-options)
-        * [3\.6\.1\.1 HLA Types File (\-\-file)](#3611-hla-types-file---file)
+        * [3\.6\.1\.1 HLA Types File (\-\-input)](#3611-hla-types-file---input)
         * [3\.6\.1\.2 Zygosity test (\-\-zygosity)](#3612-zygosity-test---zygosity)
         * [3\.6\.1\.3 Methods for zygosity test (\-\-test)](#3613-methods-for-zygosity-test---test)
         * [3\.6\.1\.4 Level to test (\-\-level)](#3614-level-to-test---level)
@@ -81,7 +76,7 @@ Table of Contents
         * [3\.6\.2\.2 Allele level](#3622-allele-level)
     * [3\.7 Interaction Test](#37-interaction-test)
       * [3\.7\.1 Options](#371-options)
-        * [3\.7\.1\.1 HLA Types File (\-\-file)](#3711-hla-types-file---file)
+        * [3\.7\.1\.1 HLA Types File (\-\-input)](#3711-hla-types-file---input)
         * [3\.7\.1\.2 Interaction test (\-\-interaction)](#3712-interaction-test---interaction)
         * [3\.7\.1\.3 Test to be used (\-\-test)](#3713-test-to-be-used---test)
         * [3\.7\.1\.4 Level to test (\-\-level)](#3714-level-to-test---level)
@@ -96,7 +91,6 @@ Table of Contents
   * [4\. License](#4-license)
   * [5\. Citation](#5-citation)
   * [6\. References](#6-references)
-
 
 # 1. Introduction
 Python for HLA analysis: summary, association analysis, zygosity test and interaction test.
@@ -170,7 +164,7 @@ If you failed to install PyQt4, please follow this [guild](http://pyqt.sourcefor
 
 ## 2.3 Getting Started
 
-The latest PyHLA is available [here](https://github.com/felixfan/PyHLA/archive/v1.0.2.tar.gz).
+The latest PyHLA is available [here](https://github.com/felixfan/PyHLA/archive/v1.1.tar.gz).
 
 or, you can clone this repository via the command
 
@@ -189,14 +183,14 @@ will print a list of all command-line options.
 or, typing the following command to start the GUI.
 
 ```
-python PyGUI.py
+python gPyHLA.py
 ```
 
 # 3. Tutorials
 
 ## 3.1 Input
 
-### 3.1.1 HLA Types File (`--file`)
+### 3.1.1 HLA Types File (`--input`)
 
 The input file is a white-space (space or tab) delimited file. The first two columns are mandatory: Individual ID and Phenotype. The Individual IDs are alphanumeric and should uniquely identify a person. The second column is phenotype which can be either a quantitative trait or an affection status. Affection status should be coded as 1 and 2 for unaffected and affected, respectively.
 
@@ -248,14 +242,14 @@ Summary statistics for the data in three level: gene level, allele level, and po
 ### 3.2.1 Options
 
 ```
---file input0.txt　     [Mandatory]
+--input input0.txt　    [Mandatory]
 --summary               [Mandatory]
 --digit 4               [Default]
 --out output.txt        [Default]
 --print                 [Optimal]
 ```
 
-#### 3.2.1.1 HLA Types File (`--file`)
+#### 3.2.1.1 HLA Types File (`--input`)
 
 See section `3.1.1`.
 
@@ -278,7 +272,7 @@ Specify `--print` will print all results to screen (still write results to the o
 ### 3.2.2 Example
 
 ```
-python PyHLA.py --file input0.txt --summary --print
+python PyHLA.py --input example/input0.txt --summary --print
 ```
 
 Output:   
@@ -326,7 +320,7 @@ Methods for association analysis between HLA alleles and diseases.
 ### 3.3.1 Options
 
 ```
---file input0.txt　     [Mandatory]
+--input input0.txt　    [Mandatory]
 --assoc                 [Mandatory]
 --digit 4               [Default]
 --test fisher           [Default]
@@ -339,10 +333,10 @@ Methods for association analysis between HLA alleles and diseases.
 --seed S                [Optimal]
 --exclude EXCLUDE.txt   [Optimal]
 --covar COVAR.txt       [Optimal, for logistic and linear regression only]
---covarname COVARNAME   [Optimal, for logistic and linear regression only]
+--covar-name COVARNAME  [Optimal, for logistic and linear regression only]
 ```
 
-#### 3.3.1.1 HLA Types File (`--file`)
+#### 3.3.1.1 HLA Types File (`--input`)
 
 See section `3.1.1`.
 
@@ -361,14 +355,7 @@ chisq       Pearson chi-squared test (For disease traits, 2 x 2 coningency table
 fisher      Fisher's exact test (For disease traits, 2 x 2 coningency table)
 logistic    logistic regression (For disease traits)
 linear      linear regression (For quantitative traits)
-raw         Pearson chi-squared test (For disease traits, 2 x m coningency table) 
-score       Score test proposed by Galta (2005) et al. (For disease traits)
-delta       Population frequency difference between cases and controls 
-            (For disease traits,Fisher's exact test)
 ```
-
-When linear or logistic regression was used, assume `A*01:01` is the test allele, then `A*01:01 A*01:01` is code as 2, `A*01:01 A*01:02` is code as 1, and `A*01:02 A*01:03` is code as 0.
-
 Default value is fisher.
 
 #### 3.3.1.5 Genetic model to test (`--model`)
@@ -381,13 +368,20 @@ dom        compares individuals carry one allele against individuals do not carr
 rec        compares individuals carry homozygous of one allele against other individuals
 ```
 
-Default value is `allelic`.
+When linear or logistic regression is used, `additive`, `dom` and `rec` can be used. Assume `A*01:01` is the test allele, then genotype will be coded as following:
 
-**Note:** `--model` only effect when `--test chisq` or `--test fisher` is specified.
+```
+Genotype                  code (additive model)  code (recessive model)  code (dominant model)
+'A*01:01 A*01:01'         2                      1                       1
+'A*01:01 A*01:02'         1                      0                       1
+'A*01:02 A*01:03'         0                      0                       0
+```
+
+Default value is `allelic`.
 
 #### 3.3.1.6 Minimal allele/allele group frequency (`--freq`)
 
-A value between 0 and 1. Only alleles/allele groups have frequency higher than this threshold will be included in association analysis. Default value is 0. When `--perm` is specified, it is better to set a higher value than 0 to `--freq` to reduce permutation time.
+A value between 0 and 1. Only alleles/allele groups have frequency higher than this threshold will be included in association analysis. Default value is 0.05. When `--perm` is specified, it is better to set a higher value than 0 to `--freq` to reduce permutation time.
 
 #### 3.3.1.7 Adjustment for multiple testing (`--adjust`)
 
@@ -447,22 +441,22 @@ IID  age sex bmi
 
 **Note:** The order of individuals in covariates file does not have to be the same as the genotype input file. The number of individuals in covariates file also does not have to be the same as the genotype input file. Only the common individuals of both files were included in the analysis.
 
-#### 3.3.1.14 Covariates name (`--covarname`)
+#### 3.3.1.14 Covariates name (`--covar-name`)
 
-To select a particular subset of covariates, use `--covarname covarnames` command.
+To select a particular subset of covariates, use `--covar-name covarnames` command.
 
 covarnames is a string of trait names (in the header row of covariates file) concatenate with comma(,).
 
 For example,
 
 ```
---covar cov.txt                                    # use all covariates in cov.txt
---covar cov.txt --covarname bmi                    # only use 'bmi'
---covar cov.txt --covarname age,bmi                # use both 'age' and 'bmi'
---covar cov.txt --covarname age,sex,bmi            # use all three covariates
+--covar cov.txt                                     # use all covariates in cov.txt
+--covar cov.txt --covar-name bmi                    # only use 'bmi'
+--covar cov.txt --covar-name age,bmi                # use both 'age' and 'bmi'
+--covar cov.txt --covar-name age,sex,bmi            # use all three covariates
 ```
 
-**Note:** if `--covarname covarnames` command is not specified, all covariates in cov.txt will be used.
+**Note:** if `--covar-name covarnames` command is not specified, all covariates in cov.txt will be used.
 
 ### 3.3.2 Allele Association Analysis Examples
 
@@ -485,10 +479,7 @@ DF            Degree of freedom
 P_Chisq       P-value for Pearson's chi-squared test
 P_FET         P-value for Fisher's exact test
 P_Logit       P-value for logistic regression
-P_raw         P-value for raw test
 P_Linear      P-value for linear regression
-U             Score test U
-Delta         Population frequency difference
 OR            Odds ratio
 beta          Regression coefficient
 L95           Lower bound of 95% confidence interval for odds ratio or regression coefficient
@@ -505,100 +496,73 @@ PermNA        Number of permutation with NA statistic
 
 Fisher's exact test is the default option.
 ```
-python PyHLA.py --file input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR
-python PyHLA.py --file input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --perm 10000
+python PyHLA.py --input example/input0.txt --assoc --digit 4 
+      --freq 0.05 --adjust FDR
+python PyHLA.py --input example/input0.txt --assoc --digit 4 
+      --freq 0.05 --adjust FDR --perm 10000
 ```
 
 Pearson's chi-squared test
 ```
-python PyHLA.py --file input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test chisq
-python PyHLA.py --file input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test chisq --perm 10000
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 
+      --adjust FDR --test chisq
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 
+      --adjust FDR --test chisq --model dom
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 
+      --adjust FDR --test chisq --model rec
 ```
 
 For each allele, a 2 X 2 coningency table contains the count of this allele and the count of the other alleles in the same gene in cases and controls was created. The total number of test is the number of alleles have frequency in cases or controls higher the the threshold specified by option `--freq`.
 
 The output includes: `Allele`, `A_case`, `B_case`, `A_ctrl`, `B_ctrl`, `F_case`, `F_ctrl`, `Freq`, `OR`, `L95`, `U95`, `P_adj`. The output of Pearson's chi-squared test also includes: `Chisq`, `DF`, `P_Chisq`. The output of Fisher's exact test also includes: `P_FET`. When `--perm` is used, `P_perm`, `PermN` and  `PermNA` are added to the output.
 
-
 ##### 3.3.2.2.2 Logistic Regression
 
 ```
-python PyHLA.py --file input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test logistic
-python PyHLA.py --file input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test logistic --perm 10000
-python PyHLA.py --file input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test logistic 
-  --covar covar.txt --covarname age,bmi
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 
+       --adjust FDR --test logistic --model additive
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 
+       --adjust FDR --test logistic --model additive --perm 10000
+python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR 
+       --test logistic --model additive --covar example/covar.txt --covar-name age,bmi
 ```
 
-For each allele, one individual will be coded as 2, 1, 0, if the individual has two copies, one copy, and zero copy of this allele, respectively. The total number of test is the number of alleles have frequency in cases or controls higher the the threshold specified by option `--freq`.
+The total number of test is the number of alleles have frequency in cases or controls higher the the threshold specified by option `--freq`.
 
 The output includes: `Allele`, `A_case`, `B_case`, `A_ctrl`, `B_ctrl`, `F_case`, `F_ctrl`, `Freq`, `L95`, `U95`, `P_adj`, `OR`, and `P_Logit`. When `--perm` is used, `P_perm`, `PermN` and  `PermNA` are added to the output.
-
-##### 3.3.2.2.3 Raw Test
-
-```
-python PyHLA.py --file input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test raw
-python PyHLA.py --file input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test raw --perm 10000
-```
-
-Raw test performs a Pearson's chi-squared test on the `2 x m` contingency tables for each gene. `m` is the number of alleles have frequency in cases or controls higher the the threshold specified by option `--freq`.
-
-The output includes: `Gene`, `Chisq`, `DF`, `P_raw`. When `--perm` is used, `P_perm`, `PermN` and  `PermNA` are added to the output.
-
-Alleles for each gene were used to create the `2 x m` contingency tables were also listed.
-
-##### 3.3.2.2.4 Score U Test
-
-```
-python PyHLA.py --file input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test score
-python PyHLA.py --file input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test score --perm 10000
-```
-
-Score test calculated the score test U using the formula proposed by Galta et al. (2005). The output includes: `Gene`, and `U`. When `--perm` is used, `P_perm`, `PermN` and  `PermNA` are added to the output.
-
-Alleles for each gene were used to calculate `U` were also listed.
-
-##### 3.3.2.2.5 Delta Test
-
-```
-python PyHLA.py --file input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test delta
-python PyHLA.py --file input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test delta --perm 10000
-```
-
-Population frequency difference between cases and controls. Similar with `--test fisher --model dom`. The difference is that `--test fisher --model dom` only use alleles that are common in both cases and controls, but `--test delta` use all alleles (alleles only in cases or only in controls were also included). Another difference is that the odds ratio of `--test delta` is calculated with Haldane's correction of Woolf's method.
-
-The output includes: `Allele`, `Delta`, `P_FET`, `OR` and `P_adj`. When `--perm` is used, `P_perm`, `PermN` and  `PermNA` are added to the output.
 
 #### 3.3.2.3 Quantitative trait
 
 ##### 3.3.2.3.1 Linear Regression
 
 ```
-python PyHLA.py --file input1.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test linear
-python PyHLA.py --file input1.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test linear --perm 10000
-python PyHLA.py --file input1.txt --assoc --digit 4 --freq 0.05 --adjust FDR 
-  --test linear --covar covar.txt --covarname age,bmi
+python PyHLA.py --input example/input1.txt --assoc --digit 4 --freq 0.05 
+      --adjust FDR --test linear --model additive
+python PyHLA.py --input example/input1.txt --assoc --digit 4 --freq 0.05 
+      --adjust FDR --test linear --model additive --perm 10000
+python PyHLA.py --input example/input1.txt --assoc --digit 4 --freq 0.05 --adjust FDR 
+      --test linear --model additive --covar example/covar.txt --covar-name sex,age,bmi
 ```
 
-For each allele, one individual will be coded as 2, 1, 0, if the individual has two copies, one copy, and zero copy of this allele, respectively. The total number of test is the number of alleles have frequency  higher the the threshold specified by option `--freq`.
+The total number of test is the number of alleles have frequency  higher the the threshold specified by option `--freq`.
 
 The output includes: `Allele`, `Freq`, `L95`, `U95`, `P_adj`, `beta`, and `P_Linear`. When `--perm` is used, `P_perm`, `PermN` and  `PermNA` are added to the output.
 
 ## 3.4 Amino Acid Alignment
-
 
 For each gene, amino acid sequences for all alleles were aligned together. Protein sequence alignments were downloaded from [IMGT/HLA](https://www.ebi.ac.uk/ipd/imgt/hla/), the current release `Release 3.23.0, 2016-01-19` was used.
 
 ### 3.4.1 Options
 
 ```
---file input0.txt　   [Mandatory]
+--input input0.txt　    [Mandatory]
 --align                 [Mandatory]
 --out output.txt        [Default]
 --print                 [Optimal]
 --consensus             [Optimal]
 ```
 
-#### 3.4.1.1 HLA Types File (`--file`)
+#### 3.4.1.1 HLA Types File (`--input`)
 
 See section `3.1.1`.
 
@@ -625,7 +589,7 @@ If there are more than one amino acid in a position, a test will be performed fo
 ### 3.5.1 Options
 
 ```
---file input0.txt　     [Mandatory]
+--input input0.txt　    [Mandatory]
 --assocAA               [Mandatory]
 --test                  [Default]
 --out output.txt        [Default]
@@ -633,11 +597,11 @@ If there are more than one amino acid in a position, a test will be performed fo
 --consensus             [Optimal]
 ```
 
-#### 3.5.1.1 HLA Types File (`--file`)
+#### 3.5.1.1 HLA Types File (`--input`)
 
 See section `3.1.1`.
 
-#### 3.5.1.2 Amino Acid Association (`--assocAA`)
+#### 3.5.1.2 Amino Acid Association (`--assoc-AA`)
 
 This option tells PyHLA perform amino acid association analysis.
 
@@ -660,7 +624,7 @@ See section 3.4.1.5.
 ### 3.5.2 Example of the Output
 
 ```
-python PyHLA.py --file input0.txt --assocAA --consensus
+python PyHLA.py --input example/input0.txt --assoc-AA --consensus
 ```
 
 By default, Fisher's exact test was used. Each `ID` contains three parts: gene, position and residue. `A_case` and  `B_case` are the number of cases carry and do not carry the residue at this position, respectively. `A_ctrl` and `B_ctrl` are the number of controls carry and do not carry the residue at this position, respectively. `P` denotes the p value of the test. `OR` is the odds ratio calculated with Haldane's correction of Woolf's method. `ACR` lists the alleles where the residue is present.
@@ -756,7 +720,7 @@ Table 3. Zygosity association</td></tr>
 ### 3.6.1 Options
 
 ```
---file input0.txt　     [Mandatory]
+--input input0.txt　    [Mandatory]
 --zygosity              [Mandatory]
 --test                  [Default]
 --level                 [Default]
@@ -767,7 +731,7 @@ Table 3. Zygosity association</td></tr>
 --freq                  [Default, for allele level only]               
 ```
 
-#### 3.6.1.1 HLA Types File (`--file`)
+#### 3.6.1.1 HLA Types File (`--input`)
 
 See section `3.1.1`.
 
@@ -801,14 +765,14 @@ For allele level only. Test of association using two digits, four digits or six 
 
 #### 3.6.1.9 Minimal allele/allele group frequency (`--freq`)
 
-For allele level only. A value between 0 and 1. Only alleles/allele groups have frequency higher than this threshold will be included in association analysis. Default value is 0. 
+For allele level only. A value between 0 and 1. Only alleles/allele groups have frequency higher than this threshold will be included in association analysis. Default value is 0.05. 
 
 ### 3.6.2 Examples
 
 #### 3.6.2.1 Residue level
 
 ```
-python PyHLA.py --file input0.txt --zygosity --consensus
+python PyHLA.py --input example/input0.txt --zygosity --consensus
 ```
 
 By default, Fisher's exact test was used. Each ID contains three parts: gene, position and residue. `Hom_P`, `Het_P` and `Zyg_P` is the p-value for testing homozygosity association, herterozygosity association and zygosity association, respectively. `Hom_OR`, `Het_OR` and `Zyg_OR` is odds ratio for testing homozygosity association, herterozygosity association and zygosity association, respectively. OR is the odds ratio calculated with Haldane's correction of Woolf's method.
@@ -856,7 +820,7 @@ DRB1_73_A                 1.0000      0.0391      0.0421  0.9951  0.4925  2.0206
 #### 3.6.2.2 Allele level
 
 ```
-python PyHLA.py --file input0.txt --zygosity --level allele --freq 0.05
+python PyHLA.py --input example/input0.txt --zygosity --level allele --freq 0.05
 ```
 
 By default, Fisher's exact test and 4 digit allele was used.
@@ -908,7 +872,7 @@ Test 10 is significant: A and B are in LD in controls.
 ### 3.7.1 Options
 
 ```
---file input0.txt　     [Mandatory]
+--input input0.txt　    [Mandatory]
 --interaction           [Mandatory]
 --test                  [Default]
 --level                 [Default]
@@ -919,7 +883,7 @@ Test 10 is significant: A and B are in LD in controls.
 --freq                  [Default, for allele level only]    
 ```
 
-#### 3.7.1.1 HLA Types File (`--file`)
+#### 3.7.1.1 HLA Types File (`--input`)
 
 See section `3.1.1`.
 
@@ -953,14 +917,14 @@ For allele level only. Test of association using two digits, four digits or six 
 
 #### 3.7.1.9 Minimal allele/allele group frequency (`--freq`)
 
-For allele level only. A value between 0 and 1. Only alleles/allele groups have frequency higher than this threshold will be included in association analysis. Default value is 0. 
+For allele level only. A value between 0 and 1. Only alleles/allele groups have frequency higher than this threshold will be included in association analysis. Default value is 0.05. 
 
 ### 3.7.2 Examples
 
 ####3.7.2.1 Residue level
 
 ```
-python PyHLA.py --file input0.txt --interaction --consensus
+python PyHLA.py --input example/input0.txt --interaction --consensus
 ```
 
 By default, Fisher's exact test was used. Each ID contains three parts: gene, position and residue. OR is the odds ratio calculated with Haldane's correction of Woolf's method. P3-P10 and OR3-OR10 are the p-value and odds ratio for tests listed in table 2, respectively.
@@ -993,7 +957,7 @@ A_57_P      DQB1_53_L         0.0287      0.4765      0.0488      1.0000      0.
 #### 3.7.2.2 Allele level
 
 ```
-python PyHLA.py --file input0.txt --interaction --level allele --freq 0.01
+python PyHLA.py --input example/input0.txt --interaction --level allele --freq 0.01
 ```
 
 By default, Fisher's exact test and 4 digit allele was used.
@@ -1017,7 +981,7 @@ This project is licensed under GNU GPL v2.
 
 # 5. Citation
 
-Yanhui Fan, You-Qiang Song. (2016) PyHLA: tests for association between HLA alleles and diseases. submitted
+Yanhui Fan, You-Qiang Song. (2016) PyHLA: tests for association between HLA alleles and diseases.
 
 # 6. References
 
