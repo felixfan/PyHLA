@@ -2840,7 +2840,7 @@ strattime = time.time()
 parser = argparse.ArgumentParser(description='Python for HLA analysis', prog="PyHLA.py")
 parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0.0')
 parser.add_argument('-V', '--print', help='print output to screen', action='store_true')
-parser.add_argument('-i', '--file', help='input file', required=True, type=str)
+parser.add_argument('-i', '--input', help='input file', required=True, type=str)
 parser.add_argument('-o', '--out', help='output file', default='output.txt')
 parser.add_argument('-d', '--digit', help='digit to test, default 4', default=4, type=int, choices=[2,4,6])
 ### summary
@@ -2871,7 +2871,7 @@ aafile = 'aa.aln.txt'
 
 args = vars(parser.parse_args())
 
-INFILE = args['file'] if 'file' in args else None
+INFILE = args['input'] if 'input' in args else None
 OUTFILE = args['out'] if 'out' in args else None
 DIGIT = args['digit'] if 'digit' in args else None
 PRINT =  args['print'] if 'print' in args else None
@@ -2908,7 +2908,7 @@ print "|    For documentation, citation & bug-report instructions:   |"
 print "|          http://felixfan.github.io/PyHLA                    |"
 print "@-------------------------------------------------------------@"
 print "\n\tOptions in effect:"
-print "\t--file", INFILE
+print "\t--input", INFILE
 if PRINT:
     print "\t--print"
 if SUMMARY:

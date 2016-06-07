@@ -516,7 +516,7 @@ class PyHLAWin(QtGui.QWidget):
 				self.covEdit.setEnabled(False)
 	def runButtonClicked(self):
 		if self.radio1.isChecked():
-			comm = 'python PyHLA.py --summary --file '
+			comm = 'python PyHLA.py --summary --input '
 			comm += str(self.gfile)
 			digi = str(self.digitCombo.currentText())
 			comm += ' --digit '
@@ -526,7 +526,7 @@ class PyHLAWin(QtGui.QWidget):
 			os.system(comm)
 		elif self.radio2.isChecked(): # for assoc only
 			if self.levelCombo.currentText() == 'allele':
-				comm = 'python PyHLA.py --assoc --file '
+				comm = 'python PyHLA.py --assoc --input '
 				comm += str(self.gfile)
 				digi = str(self.digitCombo.currentText())
 				comm += ' --digit '
@@ -566,7 +566,7 @@ class PyHLAWin(QtGui.QWidget):
 				comm += str(self.outfile)
 				os.system(comm)
 			else: # residue
-				comm = 'python PyHLA.py --assoc-AA --file '
+				comm = 'python PyHLA.py --assoc-AA --input '
 				comm += str(self.gfile)
 				testStr = str(self.testCombo.currentText())
 				testM = ''
@@ -582,7 +582,7 @@ class PyHLAWin(QtGui.QWidget):
 				comm += str(self.outfile)
 				os.system(comm)
 		elif self.radio3.isChecked():
-			comm = 'python PyHLA.py --align --file '
+			comm = 'python PyHLA.py --align --input '
 			comm += str(self.gfile)
 			if self.consensusCB.isChecked():
 				comm += ' --consensus'
@@ -590,7 +590,7 @@ class PyHLAWin(QtGui.QWidget):
 			comm += str(self.outfile)
 			os.system(comm)
 		elif self.radio4.isChecked():
-			comm = 'python PyHLA.py --zygosity --file '
+			comm = 'python PyHLA.py --zygosity --input '
 			comm += str(self.gfile)
 			comm += ' --level '
 			comm += str(self.levelCombo.currentText())
@@ -616,7 +616,7 @@ class PyHLAWin(QtGui.QWidget):
 			comm += str(self.outfile)
 			os.system(comm)
 		elif self.radio5.isChecked():
-			comm = 'python PyHLA.py --interaction --file '
+			comm = 'python PyHLA.py --interaction --input '
 			comm += str(self.gfile)
 			comm += ' --level '
 			comm += str(self.levelCombo.currentText())
