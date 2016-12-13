@@ -4,13 +4,13 @@
 
 1000 cases and 1000 controls were simulated by the following command: 
 
-```python
+```
 python simHLAtypes.py 1000 1000 999 > sim_input.txt
 ```
 
 ## 2. Data summary
 
-```python
+```
 python ../PyHLA.py --input sim_input.txt --summary --digit 4 --out test_summary_digit4.txt
 ```
 
@@ -99,7 +99,7 @@ Population level summary
 
 ## 3. Association analysis
 
-```python
+```
 python ../PyHLA.py --input sim_input.txt --assoc --digit 4 --test chisq --freq 0.05 --adjust FDR --perm 1000 --out test_assoc_chisq_digit4.txt
 ```
 
@@ -140,7 +140,7 @@ output:
 
 ## 4. Zygosity test
 
-```python
+```
 python ../PyHLA.py --input sim_input.txt --zygosity --test chisq --freq 0.05 --level allele --out test_zygosity_chisq_allele.txt
 ```
 
@@ -159,7 +159,7 @@ DQB1*05:02                0.0449    6.60e-08    1.10e-07  1.3974  0.5967  2.3418
 
 ## 5. Interaction test
 
-```python
+```
 python ../PyHLA.py --input sim_input.txt --interaction --test chisq --freq 0.05 --level allele --out test_interaction_chisq_allele.txt
 ```
 
