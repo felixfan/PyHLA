@@ -1,6 +1,6 @@
 # PyHLA: tests for association between HLA alleles and diseases
 
-Jun 7, 2016  
+Dec 12, 2016
 
 Table of Contents
 =================
@@ -96,7 +96,7 @@ Table of Contents
 
 # 1. Introduction
 Python for HLA analysis: summary, association analysis, zygosity test and interaction test.
-![](./fig/PyHLA.png)
+![](./fig/PyHLA-V4-88mm.png)
 
 # 2. Installation
 
@@ -112,9 +112,9 @@ The easiest way to install Python and the required packages: install **FREE** sc
 
 In case you want to install all package by yourself, you can try the following steps.
 
-## 2.1 Install Python 
+## 2.1 Install Python
 
-If you use Windows OS and you have not install Python 2 yet, you can download the install package from [here](https://www.python.org/downloads/), the latest version is 2.7.11 (22 April 2016). Download the installer for your machine and install it as any other software. 
+If you use Windows OS and you have not install Python 2 yet, you can download the install package from [here](https://www.python.org/downloads/), the latest version is 2.7.11 (22 April 2016). Download the installer for your machine and install it as any other software.
 
 Linux and Mac OS come with Python 2.7 pre-installed. Open the terminal and type `python --version` to see the version of Python on your machine. In case Python is not installed on your machine, you can download the [installer](https://www.python.org/downloads/) for Mac and just click it to install it. Users of Ubuntu Linux simply type (untested):
 
@@ -140,26 +140,26 @@ sudo pip install git+http://github.com/scipy/scipy/
 sudo pip install statsmodels
 ```
 
-Install PyQt4 (optional, for GUI only).    
+Install PyQt4 (optional, for GUI only).
 
-- Windows OS: Binary installers for Windows for PyQt4 is available [here](https://www.riverbankcomputing.com/software/pyqt/download).   
+- Windows OS: Binary installers for Windows for PyQt4 is available [here](https://www.riverbankcomputing.com/software/pyqt/download).
 
 - Mac OS (untested):
 
 ```
-brew install pyqt 
+brew install pyqt
 ```
 
 - Ubuntu Linux (untested):
 
 ```
-sudo apt-get install python-qt4 
+sudo apt-get install python-qt4
 ```
 
 - CentOS and RPM-based Linux (untested):
 
 ```
-sudo yum install PyQt4 
+sudo yum install PyQt4
 ```
 
 If you failed to install PyQt4, please follow this [guild](http://pyqt.sourceforge.net/Docs/PyQt4/installation.html) to install it.
@@ -180,7 +180,7 @@ Once you have downloaded PyHLA, typing
 $ python PyHLA.py -h
 ```
 
-will print a list of all command-line options. 
+will print a list of all command-line options.
 
 or, typing the following command to start the GUI.
 
@@ -277,7 +277,7 @@ Specify `--print` will print all results to screen (still write results to the o
 python PyHLA.py --input example/input0.txt --summary --print
 ```
 
-Output:   
+Output:
 
 ```
 Sample size: 2000
@@ -303,7 +303,7 @@ Allele level summary
              A*02:01         158          98         256      0.0682      0.0582      0.0640
              A*02:03         109          85         194      0.0471      0.0505      0.0485
       ...(truncated)
-             
+
 Population level summary
 ------------------------------------------------------------------
               Allele  popCaseCount   popCaseFreq  popCtrlCount   popCtrlFreq
@@ -408,11 +408,11 @@ Number of permutation will be performed.
 
 For each permutation run, a simulated dataset is constructed from the original dataset by randomizing the assignment of phenotype status among individuals. The same individuals are used, maintaining the same LD structure and the original case/control ratio.
 
-Only simulated dataset with the same common alleles between cases and controls as the original dataset will be used. So assign a greater than zero value to `--freq` can speed up the permutation.  
+Only simulated dataset with the same common alleles between cases and controls as the original dataset will be used. So assign a greater than zero value to `--freq` can speed up the permutation.
 
 #### 3.1.1.11 Random seed (`--seed`)
 
-Random seed for permutation. A number used to initialize the basic random number generator. By default, the current system time is used. 
+Random seed for permutation. A number used to initialize the basic random number generator. By default, the current system time is used.
 
 #### 3.1.1.12 Exclude Alleles (`--exclude`)
 
@@ -486,7 +486,7 @@ OR            Odds ratio
 beta          Regression coefficient
 L95           Lower bound of 95% confidence interval for odds ratio or regression coefficient
 U95           Upper bound of 95% confidence interval for odds ratio or regression coefficient
-P_adj         Multiple testing adjusted p value 
+P_adj         Multiple testing adjusted p value
 P_perm        P-value for permutation test
 PermN         Number of permutation with statistic larger than the original data
 PermNA        Number of permutation with NA statistic
@@ -719,7 +719,7 @@ Table 3. Zygosity association</td></tr>
 --print                 [Optimal]
 --consensus             [Optimal, for residual level only]
 --digit                 [Default, for allele level only]
---freq                  [Default, for allele level only]               
+--freq                  [Default, for allele level only]
 ```
 
 #### 3.6.1.1 HLA Types File (`--input`)
@@ -756,7 +756,7 @@ For allele level only. Test of association using two digits, four digits or six 
 
 #### 3.6.1.9 Minimal allele/allele group frequency (`--freq`)
 
-For allele level only. A value between 0 and 1. Only alleles/allele groups have frequency higher than this threshold will be included in association analysis. Default value is 0.05. 
+For allele level only. A value between 0 and 1. Only alleles/allele groups have frequency higher than this threshold will be included in association analysis. Default value is 0.05.
 
 ### 3.6.2 Examples
 
@@ -871,7 +871,7 @@ Test 10 is significant: A and B are in LD in controls.
 --print                 [Optimal]
 --consensus             [Optimal, for residual level only]
 --digit                 [Default, for allele level only]
---freq                  [Default, for allele level only]    
+--freq                  [Default, for allele level only]
 ```
 
 #### 3.7.1.1 HLA Types File (`--input`)
@@ -908,7 +908,7 @@ For allele level only. Test of association using two digits, four digits or six 
 
 #### 3.7.1.9 Minimal allele/allele group frequency (`--freq`)
 
-For allele level only. A value between 0 and 1. Only alleles/allele groups have frequency higher than this threshold will be included in association analysis. Default value is 0.05. 
+For allele level only. A value between 0 and 1. Only alleles/allele groups have frequency higher than this threshold will be included in association analysis. Default value is 0.05.
 
 ### 3.7.2 Examples
 
