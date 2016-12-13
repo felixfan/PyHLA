@@ -96,7 +96,7 @@ Table of Contents
 
 # 1. Introduction
 Python for HLA analysis: summary, association analysis, zygosity test and interaction test.
-![](./fig/PyHLA-V4-88mm.png)
+![](./fig/PyHLA-V4-85mm.png)
 
 # 2. Installation
 
