@@ -972,7 +972,7 @@ This project is licensed under GNU GPL v2.
 
 # 5. Citation
 
-Yanhui Fan, You-Qiang Song. (2016) PyHLA: tests for association between HLA alleles and diseases.
+Yanhui Fan, You-Qiang Song. (2016) PyHLA: tests for association between HLA alleles and diseases. BMC Bioinformatics. 2017. 18:90
 
 # 6. References
 
