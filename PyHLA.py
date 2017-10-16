@@ -266,7 +266,7 @@ def hlaFreq(caseAlleles, ctrlAlleles, np, nc, nn):
             ff.append(1.0 * caseAlleles[allele] / np[allele.split('*')[0]])
         else:
             ff.append(0)
-        if allele in ctrlAlleles:   
+        if allele in ctrlAlleles:
             ff.append(1.0 * ctrlAlleles[allele] / nc[allele.split('*')[0]])
         else:
             ff.append(0)
@@ -326,7 +326,7 @@ def alleleCount(infile, digits):
                 if a4d2 in allelesN:
                     allelesN[a4d2] += 1
                 else:
-                    allelesN[a4d2] = 1          
+                    allelesN[a4d2] = 1
     f.close()
     return allelesN, genesN, N
 def quantTrait(infile):
@@ -360,11 +360,11 @@ def printSummary(alleles, freq, caseAlleles, ctrlAlleles, np, nc, nn, popCase, p
         print  "%20s" % allele,
         ttt = 0
         if allele in caseAlleles:
-            print "%12d" % caseAlleles[allele], 
+            print "%12d" % caseAlleles[allele],
             ttt = caseAlleles[allele]
         else:
             print "%12d" % 0,
-        if allele in ctrlAlleles:   
+        if allele in ctrlAlleles:
             print  "%12d" % ctrlAlleles[allele],
             print "%12d" % (ctrlAlleles[allele] + ttt),
         else:
@@ -644,7 +644,7 @@ def printAssocRaw(assoc, alleles, permP=None, permN=None, permNA=None):
         elif g != a.split('*')[0]:
             g = a.split('*')[0]
             print
-            print 
+            print
             print "%20s" % a,
             i = 1
         else:
@@ -738,7 +738,7 @@ def printAssocScore(assoc, alleles, permP=None, permN=None, permNA=None):
         elif g != a.split('*')[0]:
             g = a.split('*')[0]
             print
-            print 
+            print
             print "%20s" % a,
             i = 1
         else:
@@ -1030,8 +1030,8 @@ def writeAssocDelta(assoc, outfile, perm=None):
             else:
                 fp.write("%10.2e\n" % assoc[a][4])
 ################  HLAassoc   ###############################################################
-def adjustP(pvalues, method = "Benjamini-Hochberg"):                
-    """                                                                                                   
+def adjustP(pvalues, method = "Benjamini-Hochberg"):
+    """
     correct p-values for multiple testing
     methods: Bonferroni, Bonferroni-Holm or Holm, Benjamini-Hochberg or FDR
     """
@@ -1046,7 +1046,7 @@ def adjustP(pvalues, method = "Benjamini-Hochberg"):
             pvalue, i = vals
             cp[i] = (n-rank) * pvalue
         for rank, vals in enumerate(values):
-            pvalue, i = vals                                                      
+            pvalue, i = vals
             if rank > 0:
                 cp[i] = min(1.0, max(cp[i], cp[j]))
             else:
@@ -1129,7 +1129,7 @@ def assocADRChiFisher(infile, digit, freq, test='chisq', model = 'allelic', adju
                     ss.append(n4)
                     ss.append(alleleFreq[allele][0])
                     ss.append(alleleFreq[allele][1])
-                    ss.append(alleleFreq[allele][2])    
+                    ss.append(alleleFreq[allele][2])
                     if test == "chisq":
                         ss.append(p)
                         ss.append(chi2)
@@ -1453,7 +1453,7 @@ def assocDelta(infile, digit, freq=0.05, adjust='FDR', exclude=None, perm=None, 
                 np = popP[allele.split('*')[0]]
                 nc = popC[allele.split('*')[0]]
                 if allele in popCase:
-                    n1 = popCase[allele]    
+                    n1 = popCase[allele]
                 else:
                     n1 = 0
                 tfp = 1.0 * n1 / np
@@ -1491,7 +1491,7 @@ def assocDelta(infile, digit, freq=0.05, adjust='FDR', exclude=None, perm=None, 
                     assoc[a].append('NA')
         cp = adjustP(ps,adjust)
         for i in range(len(ns)):
-            assoc[ns[i]].append(cp[i])      
+            assoc[ns[i]].append(cp[i])
     ### perm
     if perm is None:
         return assoc
@@ -1511,7 +1511,7 @@ def assocDelta(infile, digit, freq=0.05, adjust='FDR', exclude=None, perm=None, 
                 np = np9[allele.split('*')[0]]
                 nc = nc9[allele.split('*')[0]]
                 if allele in case9:
-                    n1 = case9[allele]  
+                    n1 = case9[allele]
                 else:
                     n1 = 0
                 tfp = 1.0 * n1 / np
@@ -1755,7 +1755,7 @@ def regressionLogistic(infile, digits, freq, model = 'additive', adjust = 'FDR',
                 if p != 'NA':
                     ss.append(p)
                 else:
-                    ss.append('NA') 
+                    ss.append('NA')
                 if OR != 'NA':
                     ss.append(OR)
                 else:
@@ -1828,7 +1828,7 @@ def regressionLogistic(infile, digits, freq, model = 'additive', adjust = 'FDR',
                         mydata = pd.merge(geno9, cov, on='IID', how='inner')
                     try:
                         lr = smf.logit(formula = myformula, data = mydata).fit(maxiter=100, disp=False)
-                        p = lr.pvalues[1]   
+                        p = lr.pvalues[1]
                     except:
                         p = 'NA'
                     if p == 'NA':
@@ -2540,7 +2540,7 @@ def countAA(Geno, seq, gene1, gene2, pos1, pos2, aa1, aa2):
         for j in range(0,len(item),2):
             k = j + 1
             if item[j].startswith(gene1) and item[k].startswith(gene1):
-                if item[j] in seq: 
+                if item[j] in seq:
                     if len(seq[item[j]]) > pos1:
                         if seq[item[j]][pos1] == aa1:
                             flag1 = 1
@@ -2550,7 +2550,7 @@ def countAA(Geno, seq, gene1, gene2, pos1, pos2, aa1, aa2):
                             if seq[item[k]][pos1] ==aa1:
                                 flag1 =1
             if item[j].startswith(gene2) and item[k].startswith(gene2):
-                if item[j] in seq: 
+                if item[j] in seq:
                     if len(seq[item[j]]) > pos2:
                         if seq[item[j]][pos2] == aa2:
                             flag2 = 1
@@ -2634,10 +2634,10 @@ def printInteract(assoc, level):
 
     for k in sorted(assoc.keys()):
         if level == 'residue':
-            print "%-12s" % (k[0]+'_'+str(k[1])+'_'+k[2]), 
+            print "%-12s" % (k[0]+'_'+str(k[1])+'_'+k[2]),
             print "%-12s" % (k[3]+'_'+str(k[4])+'_'+k[5]),
         else:
-            print "%-12s"  % k[0], 
+            print "%-12s"  % k[0],
             print "%-12s" % k[1],
         for i in range(2, 10):
             if assoc[k][i] == 'NA':
@@ -2698,7 +2698,7 @@ def countAAzyg(Geno, seq, gene, pos, aa):
         for j in range(0,len(item),2):
             k = j + 1
             if item[j].startswith(gene) and item[k].startswith(gene):
-                if item[j] in seq: 
+                if item[j] in seq:
                     if len(seq[item[j]]) > pos:
                         if seq[item[j]][pos] == aa:
                             flag1 = 1
@@ -2900,9 +2900,9 @@ LEVEL = args['level'] if 'level' in args else None
 INT = args['interaction'] if 'interaction' in args else None
 ##########################  log infor  ##################################################################
 print "@-------------------------------------------------------------@"
-print "|       PyHLA       |     v1.1.0      |      26 May 2016      |"
+print "|       PyHLA       |     v1.1.1      |      16 Oct 2017      |"
 print "|-------------------------------------------------------------|"
-print "|  (C) 2016 Felix Yanhui Fan, GNU General Public License, v2  |"
+print "|  (C) 2017 Felix Yanhui Fan, GNU General Public License, v2  |"
 print "|-------------------------------------------------------------|"
 print "|    For documentation, citation & bug-report instructions:   |"
 print "|          http://felixfan.github.io/PyHLA                    |"
@@ -2933,7 +2933,7 @@ elif ASSOC:
         if COVFILE:
             print "\t--covar", COVFILE
             if COVNAME:
-                print "\t--covar-name", COVNAME 
+                print "\t--covar-name", COVNAME
     print "\t--freq", FREQ
     if EXCLUDE:
         print "\t--exclude", EXCLUDE
