@@ -1,5 +1,5 @@
-#coding=utf-8
 #!/usr/bin/env python
+#coding=utf-8
 
 from __future__ import division
 import statsmodels.formula.api as smf
@@ -2838,7 +2838,7 @@ def writeZygosity(ans, level, outfile):
 ###################### arguments ######################################################################
 strattime = time.time()
 parser = argparse.ArgumentParser(description='Python for HLA analysis', prog="PyHLA.py")
-parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0.0')
+parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.1.1')
 parser.add_argument('-V', '--print', help='print output to screen', action='store_true')
 parser.add_argument('-i', '--input', help='input file', required=True, type=str)
 parser.add_argument('-o', '--out', help='output file', default='output.txt')
