@@ -1652,15 +1652,15 @@ def writeRecode(infile, digits, test, model):
     tmp = tmp + '.txt'
     f = open(tmp,'w')
     ans, header = allelicRecode(infile, digits, test, model)
-    for i in header:
-        i = string.replace(i, '*', '_') # change A*01:01 to A_01_01
-        i = string.replace(i, ':', '_')
-        f.write("%12s" % i,)
+    tab = string.maketrans('*:', '__')
+    header = map(lambda i: i.translate(tab), header)
+    f.write('\t'.join(header))
     f.write('\n')
+    f.flush()
     for i in ans:
-        for j in ans[i]:
-            f.write("%12s" % j,)
+        f.write('\t'.join(map(str, ans[i])))
         f.write('\n')
+        f.flush()
     f.close()
     return tmp
 def regressionLogistic(infile, digits, freq, model = 'additive', adjust = 'FDR', exclude=None, covfile=None, covname=None, perm=None, seed=None, test='logistic'):
