@@ -1641,6 +1641,8 @@ def allelicRecode(infile, digits, test, model):
                     sys.exit("input format is wrong!")
             else:
                 for gg in geneAlleles[geneCol[i]]:
+                    if gg not in header:
+                        header.append(gg)
                     ans[alleles[0]].append('NA')
     return ans,header
 def writeRecode(infile, digits, test, model):
