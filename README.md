@@ -1,191 +1,139 @@
 # PyHLA: tests for association between HLA alleles and diseases
 
-Dec 12, 2016
+08 April 2026
+
+This version has been migrated to **Python 3** (3.8 or later).
+The command-line interface and all analytical results are unchanged.
+If you need the original **Python 2** version, please use the [v1.1.1r release](https://github.com/felixfan/PyHLA/releases/tag/v1.1.1r).
 
 Table of Contents
 =================
 
-  * [1\. Introduction](#1-introduction)
-  * [2\. Installation](#2-installation)
-    * [2\.1 Install Python](#21-install-python)
-    * [2\.2 Install Python Modules](#22-install-python-modules)
-    * [2\.3 Getting Started](#23-getting-started)
-  * [3\. Tutorials](#3-tutorials)
-    * [3\.1 Input](#31-input)
-      * [3\.1\.1 HLA Types File (\-\-input)](#311-hla-types-file---input)
-      * [3\.1\.2 Exclude Alleles File (\-\-exclude)](#312-exclude-alleles-file---exclude)
-      * [3\.1\.3 Covariates file (\-\-covar)](#313-covariates-file---covar)
-    * [3\.2 Data Summary](#32-data-summary)
-      * [3\.2\.1 Options](#321-options)
-        * [3\.2\.1\.1 HLA Types File (\-\-input)](#3211-hla-types-file---input)
-        * [3\.2\.1\.2 Data Summary (\-\-summary)](#3212-data-summary---summary)
-        * [3\.2\.1\.3 Digits resolution (\-\-digit)](#3213-digits-resolution---digit)
-        * [3\.2\.1\.4 Output file name (\-\-out)](#3214-output-file-name---out)
-        * [3\.2\.1\.5 Print output to screen (\-\-print)](#3215-print-output-to-screen---print)
-      * [3\.2\.2 Example](#322-example)
-    * [3\.3 Allele Association Analysis](#33-allele-association-analysis)
-      * [3\.3\.1 Options](#331-options)
-        * [3\.3\.1\.1 HLA Types File (\-\-input)](#3311-hla-types-file---input)
-        * [3\.3\.1\.2 Allele Association Analysis (\-\-assoc)](#3312-allele-association-analysis---assoc)
-        * [3\.3\.1\.3 Digits resolution (\-\-digit)](#3313-digits-resolution---digit)
-        * [3\.3\.1\.4 Methods for association test (\-\-test)](#3314-methods-for-association-test---test)
-        * [3\.3\.1\.5 Genetic model to test (\-\-model)](#3315-genetic-model-to-test---model)
-        * [3\.3\.1\.6 Minimal allele/allele group frequency (\-\-freq)](#3316-minimal-alleleallele-group-frequency---freq)
-        * [3\.3\.1\.7 Adjustment for multiple testing (\-\-adjust)](#3317-adjustment-for-multiple-testing---adjust)
-        * [3\.3\.1\.8 Output file name (\-\-out)](#3318-output-file-name---out)
-        * [3\.3\.1\.9 Print output to screen (\-\-print)](#3319-print-output-to-screen---print)
-        * [3\.3\.1\.10 Permutation (\-\-perm)](#33110-permutation---perm)
-        * [3\.1\.1\.11 Random seed (\-\-seed)](#31111-random-seed---seed)
-        * [3\.1\.1\.12 Exclude Alleles (\-\-exclude)](#31112-exclude-alleles---exclude)
-        * [3\.3\.1\.13 Covariates file (\-\-covar)](#33113-covariates-file---covar)
-        * [3\.3\.1\.14 Covariates name (\-\-covar\-name)](#33114-covariates-name---covar-name)
-      * [3\.3\.2 Allele Association Analysis Examples](#332-allele-association-analysis-examples)
-        * [3\.3\.2\.1 Output of Allele Association Analysis](#3321-output-of-allele-association-analysis)
-        * [3\.3\.2\.2 Disease trait (Case/Control Study)](#3322-disease-trait-casecontrol-study)
-          * [3\.3\.2\.2\.1 Fisher's exact test and Pearson's chi\-squared test](#33221-fishers-exact-test-and-pearsons-chi-squared-test)
-          * [3\.3\.2\.2\.2 Logistic Regression](#33222-logistic-regression)
-        * [3\.3\.2\.3 Quantitative trait](#3323-quantitative-trait)
-          * [3\.3\.2\.3\.1 Linear Regression](#33231-linear-regression)
-    * [3\.4 Amino Acid Alignment](#34-amino-acid-alignment)
-      * [3\.4\.1 Options](#341-options)
-        * [3\.4\.1\.1 HLA Types File (\-\-input)](#3411-hla-types-file---input)
-        * [3\.4\.1\.2 Amino Acid Alignment (\-\-align)](#3412-amino-acid-alignment---align)
-        * [3\.4\.1\.3 Output file name (\-\-out)](#3413-output-file-name---out)
-        * [3\.4\.1\.4 Print output to screen (\-\-print)](#3414-print-output-to-screen---print)
-        * [3\.4\.1\.5 Consensus Amino Acid Sequence \-\-consensus](#3415-consensus-amino-acid-sequence---consensus)
-    * [3\.5 Amino Acid Association](#35-amino-acid-association)
-      * [3\.5\.1 Options](#351-options)
-        * [3\.5\.1\.1 HLA Types File (\-\-input)](#3511-hla-types-file---input)
-        * [3\.5\.1\.2 Amino Acid Association (\-\-assoc\-AA)](#3512-amino-acid-association---assoc-aa)
-        * [3\.5\.1\.3 Methods for association test (\-\-test)](#3513-methods-for-association-test---test)
-        * [3\.5\.1\.4 Output file name (\-\-out)](#3514-output-file-name---out)
-        * [3\.5\.1\.5 Print output to screen (\-\-print)](#3515-print-output-to-screen---print)
-        * [3\.5\.1\.6 Consensus Amino Acid Sequence \-\-consensus](#3516-consensus-amino-acid-sequence---consensus)
-      * [3\.5\.2 Example of the Output](#352-example-of-the-output)
-    * [3\.6 Zygosity Test](#36-zygosity-test)
-      * [3\.6\.1 Options](#361-options)
-        * [3\.6\.1\.1 HLA Types File (\-\-input)](#3611-hla-types-file---input)
-        * [3\.6\.1\.2 Zygosity test (\-\-zygosity)](#3612-zygosity-test---zygosity)
-        * [3\.6\.1\.3 Methods for zygosity test (\-\-test)](#3613-methods-for-zygosity-test---test)
-        * [3\.6\.1\.4 Level to test (\-\-level)](#3614-level-to-test---level)
-        * [3\.6\.1\.5 Output file name (\-\-out)](#3615-output-file-name---out)
-        * [3\.6\.1\.6 Print output to screen (\-\-print)](#3616-print-output-to-screen---print)
-        * [3\.6\.1\.7 Consensus sequence (\-\-consensus)](#3617-consensus-sequence---consensus)
-        * [3\.6\.1\.8 Digits resolution (\-\-digit)](#3618-digits-resolution---digit)
-        * [3\.6\.1\.9 Minimal allele/allele group frequency (\-\-freq)](#3619-minimal-alleleallele-group-frequency---freq)
-      * [3\.6\.2 Examples](#362-examples)
-        * [3\.6\.2\.1 Residue level](#3621-residue-level)
-        * [3\.6\.2\.2 Allele level](#3622-allele-level)
-    * [3\.7 Interaction Test](#37-interaction-test)
-      * [3\.7\.1 Options](#371-options)
-        * [3\.7\.1\.1 HLA Types File (\-\-input)](#3711-hla-types-file---input)
-        * [3\.7\.1\.2 Interaction test (\-\-interaction)](#3712-interaction-test---interaction)
-        * [3\.7\.1\.3 Test to be used (\-\-test)](#3713-test-to-be-used---test)
-        * [3\.7\.1\.4 Level to test (\-\-level)](#3714-level-to-test---level)
-        * [3\.7\.1\.5 Output file name (\-\-out)](#3715-output-file-name---out)
-        * [3\.7\.1\.6 Print output to screen (\-\-print)](#3716-print-output-to-screen---print)
-        * [3\.7\.1\.7 Consensus sequence (\-\-consensus)](#3717-consensus-sequence---consensus)
-        * [3\.7\.1\.8 Digits resolution (\-\-digit)](#3718-digits-resolution---digit)
-        * [3\.7\.1\.9 Minimal allele/allele group frequency (\-\-freq)](#3719-minimal-alleleallele-group-frequency---freq)
-      * [3\.7\.2 Examples](#372-examples)
-        * [3\.7\.2\.1 Residue level](#3721-residue-level)
-        * [3\.7\.2\.2 Allele level](#3722-allele-level)
-  * [4\. License](#4-license)
-  * [5\. Citation](#5-citation)
-  * [6\. References](#6-references)
+* [1\. Introduction](#1-introduction)
+* [2\. Installation](#2-installation)
+  * [2\.1 Install Python](#21-install-python)
+  * [2\.2 Install Python Modules](#22-install-python-modules)
+  * [2\.3 Getting Started](#23-getting-started)
+* [3\. Tutorials](#3-tutorials)
+  * [3\.1 Input](#31-input)
+    * [3\.1\.1 HLA Types File (\-\-input)](#311-hla-types-file---input)
+    * [3\.1\.2 Exclude Alleles File (\-\-exclude)](#312-exclude-alleles-file---exclude)
+    * [3\.1\.3 Covariates file (\-\-covar)](#313-covariates-file---covar)
+  * [3\.2 Data Summary](#32-data-summary)
+    * [3\.2\.1 Options](#321-options)
+      * [3\.2\.1\.1 HLA Types File (\-\-input)](#3211-hla-types-file---input)
+      * [3\.2\.1\.2 Data Summary (\-\-summary)](#3212-data-summary---summary)
+      * [3\.2\.1\.3 Digits resolution (\-\-digit)](#3213-digits-resolution---digit)
+      * [3\.2\.1\.4 Output file name (\-\-out)](#3214-output-file-name---out)
+      * [3\.2\.1\.5 Print output to screen (\-\-print)](#3215-print-output-to-screen---print)
+    * [3\.2\.2 Example](#322-example)
+  * [3\.3 Allele Association Analysis](#33-allele-association-analysis)
+    * [3\.3\.1 Options](#331-options)
+      * [3\.3\.1\.1 HLA Types File (\-\-input)](#3311-hla-types-file---input)
+      * [3\.3\.1\.2 Allele Association Analysis (\-\-assoc)](#3312-allele-association-analysis---assoc)
+      * [3\.3\.1\.3 Digits resolution (\-\-digit)](#3313-digits-resolution---digit)
+      * [3\.3\.1\.4 Methods for association test (\-\-test)](#3314-methods-for-association-test---test)
+      * [3\.3\.1\.5 Genetic model to test (\-\-model)](#3315-genetic-model-to-test---model)
+      * [3\.3\.1\.6 Minimal allele/allele group frequency (\-\-freq)](#3316-minimal-alleleallele-group-frequency---freq)
+      * [3\.3\.1\.7 Adjustment for multiple testing (\-\-adjust)](#3317-adjustment-for-multiple-testing---adjust)
+      * [3\.3\.1\.8 Output file name (\-\-out)](#3318-output-file-name---out)
+      * [3\.3\.1\.9 Print output to screen (\-\-print)](#3319-print-output-to-screen---print)
+      * [3\.3\.1\.10 Permutation (\-\-perm)](#33110-permutation---perm)
+      * [3\.1\.1\.11 Random seed (\-\-seed)](#31111-random-seed---seed)
+      * [3\.1\.1\.12 Exclude Alleles (\-\-exclude)](#31112-exclude-alleles---exclude)
+      * [3\.3\.1\.13 Covariates file (\-\-covar)](#33113-covariates-file---covar)
+      * [3\.3\.1\.14 Covariates name (\-\-covar\-name)](#33114-covariates-name---covar-name)
+    * [3\.3\.2 Allele Association Analysis Examples](#332-allele-association-analysis-examples)
+      * [3\.3\.2\.1 Output of Allele Association Analysis](#3321-output-of-allele-association-analysis)
+      * [3\.3\.2\.2 Disease trait (Case/Control Study)](#3322-disease-trait-casecontrol-study)
+        * [3\.3\.2\.2\.1 Fisher's exact test and Pearson's chi\-squared test](#33221-fishers-exact-test-and-pearsons-chi-squared-test)
+        * [3\.3\.2\.2\.2 Logistic Regression](#33222-logistic-regression)
+      * [3\.3\.2\.3 Quantitative trait](#3323-quantitative-trait)
+        * [3\.3\.2\.3\.1 Linear Regression](#33231-linear-regression)
+  * [3\.4 Amino Acid Alignment](#34-amino-acid-alignment)
+    * [3\.4\.1 Options](#341-options)
+      * [3\.4\.1\.1 HLA Types File (\-\-input)](#3411-hla-types-file---input)
+      * [3\.4\.1\.2 Amino Acid Alignment (\-\-align)](#3412-amino-acid-alignment---align)
+      * [3\.4\.1\.3 Output file name (\-\-out)](#3413-output-file-name---out)
+      * [3\.4\.1\.4 Print output to screen (\-\-print)](#3414-print-output-to-screen---print)
+      * [3\.4\.1\.5 Consensus Amino Acid Sequence \-\-consensus](#3415-consensus-amino-acid-sequence---consensus)
+  * [3\.5 Amino Acid Association](#35-amino-acid-association)
+    * [3\.5\.1 Options](#351-options)
+      * [3\.5\.1\.1 HLA Types File (\-\-input)](#3511-hla-types-file---input)
+      * [3\.5\.1\.2 Amino Acid Association (\-\-assoc\-AA)](#3512-amino-acid-association---assoc-aa)
+      * [3\.5\.1\.3 Methods for association test (\-\-test)](#3513-methods-for-association-test---test)
+      * [3\.5\.1\.4 Output file name (\-\-out)](#3514-output-file-name---out)
+      * [3\.5\.1\.5 Print output to screen (\-\-print)](#3515-print-output-to-screen---print)
+      * [3\.5\.1\.6 Consensus Amino Acid Sequence \-\-consensus](#3516-consensus-amino-acid-sequence---consensus)
+    * [3\.5\.2 Example of the Output](#352-example-of-the-output)
+  * [3\.6 Zygosity Test](#36-zygosity-test)
+    * [3\.6\.1 Options](#361-options)
+      * [3\.6\.1\.1 HLA Types File (\-\-input)](#3611-hla-types-file---input)
+      * [3\.6\.1\.2 Zygosity test (\-\-zygosity)](#3612-zygosity-test---zygosity)
+      * [3\.6\.1\.3 Methods for zygosity test (\-\-test)](#3613-methods-for-zygosity-test---test)
+      * [3\.6\.1\.4 Level to test (\-\-level)](#3614-level-to-test---level)
+      * [3\.6\.1\.5 Output file name (\-\-out)](#3615-output-file-name---out)
+      * [3\.6\.1\.6 Print output to screen (\-\-print)](#3616-print-output-to-screen---print)
+      * [3\.6\.1\.7 Consensus sequence (\-\-consensus)](#3617-consensus-sequence---consensus)
+      * [3\.6\.1\.8 Digits resolution (\-\-digit)](#3618-digits-resolution---digit)
+      * [3\.6\.1\.9 Minimal allele/allele group frequency (\-\-freq)](#3619-minimal-alleleallele-group-frequency---freq)
+    * [3\.6\.2 Examples](#362-examples)
+      * [3\.6\.2\.1 Residue level](#3621-residue-level)
+      * [3\.6\.2\.2 Allele level](#3622-allele-level)
+  * [3\.7 Interaction Test](#37-interaction-test)
+    * [3\.7\.1 Options](#371-options)
+      * [3\.7\.1\.1 HLA Types File (\-\-input)](#3711-hla-types-file---input)
+      * [3\.7\.1\.2 Interaction test (\-\-interaction)](#3712-interaction-test---interaction)
+      * [3\.7\.1\.3 Test to be used (\-\-test)](#3713-test-to-be-used---test)
+      * [3\.7\.1\.4 Level to test (\-\-level)](#3714-level-to-test---level)
+      * [3\.7\.1\.5 Output file name (\-\-out)](#3715-output-file-name---out)
+      * [3\.7\.1\.6 Print output to screen (\-\-print)](#3716-print-output-to-screen---print)
+      * [3\.7\.1\.7 Consensus sequence (\-\-consensus)](#3717-consensus-sequence---consensus)
+      * [3\.7\.1\.8 Digits resolution (\-\-digit)](#3718-digits-resolution---digit)
+      * [3\.7\.1\.9 Minimal allele/allele group frequency (\-\-freq)](#3719-minimal-alleleallele-group-frequency---freq)
+    * [3\.7\.2 Examples](#372-examples)
+      * [3\.7\.2\.1 Residue level](#3721-residue-level)
+      * [3\.7\.2\.2 Allele level](#3722-allele-level)
+* [4\. License](#4-license)
+* [5\. Citation](#5-citation)
+* [6\. References](#6-references)
 
 # 1. Introduction
+
 Python for HLA analysis: summary, association analysis, zygosity test and interaction test.
 ![](./fig/PyHLA-V4-85mm.png)
 
 # 2. Installation
 
-PyHLA uses [Python 2](https://www.python.org/) (Python 2.7 or higher) and the following Python modules:
+**Python 2 users:** This version requires **Python 3.8 or later**.
+The GUI (`gPyHLA.py`) has been removed because it depended on PyQt4, which is Python-2-only. If you need the GUI or must stay on Python 2, please use the [v1.1.1r release](https://github.com/felixfan/PyHLA/releases/tag/v1.1.1r).
 
-* [pandas](http://pandas.pydata.org/)
-* [numpy](http://www.numpy.org/)
-* [SciPy](http://www.scipy.org/)
-* [StatsModels](http://statsmodels.sourceforge.net/)
-* [PyQt4](https://wiki.python.org/moin/PyQt4) (If you want to use the GUI)
+PyHLA requires **Python 3.8 or later** and the following packages:
 
-The easiest way to install Python and the required packages: install **FREE** scientific python distributions such as [Anaconda](http://continuum.io/downloads) and [Enthought Canopy](https://www.enthought.com/products/canopy/) which are already integrated the core scientific analytic and scientific Python packages such as `SciPy`, `pandas`, `numpy`, `StatsModels` and `PyQt4`.
+| Package                                     | Minimum version |
+| ------------------------------------------- | --------------- |
+| [numpy](https://numpy.org/)                 | 1.21            |
+| [pandas](https://pandas.pydata.org/)        | 1.3             |
+| [scipy](https://scipy.org/)                 | 1.7             |
+| [statsmodels](https://www.statsmodels.org/) | 0.13            |
 
-In case you want to install all package by yourself, you can try the following steps.
-
-## 2.1 Install Python
-
-If you use Windows OS and you have not install Python 2 yet, you can download the install package from [here](https://www.python.org/downloads/), the latest version is 2.7.11 (22 April 2016). Download the installer for your machine and install it as any other software.
-
-Linux and Mac OS come with Python 2.7 pre-installed. Open the terminal and type `python --version` to see the version of Python on your machine. In case Python is not installed on your machine, you can download the [installer](https://www.python.org/downloads/) for Mac and just click it to install it. Users of Ubuntu Linux simply type (untested):
-
-```
-sudo apt-get install build-essential python2.7
-```
-
-Users of RedHat or RedHat-derived distros (Fedora, CentOS) type (untested):
-
-```
-sudo yum groupinstall "Development tools"
-sudo yum install python27
-```
-
-## 2.2 Install Python Modules
-
-If you have Python 2 >=2.7.9, you will already have `pip`. Open the terminal (or Windows command prompt) and type the following commands to install Python modules.
-
-```
-sudo pip install pandas
-sudo pip install numpy
-sudo pip install git+http://github.com/scipy/scipy/
-sudo pip install statsmodels
-```
-
-Install PyQt4 (optional, for GUI only).
-
-- Windows OS: Binary installers for Windows for PyQt4 is available [here](https://www.riverbankcomputing.com/software/pyqt/download).
-
-- Mac OS (untested):
-
-```
-brew install pyqt
-```
-
-- Ubuntu Linux (untested):
-
-```
-sudo apt-get install python-qt4
-```
-
-- CentOS and RPM-based Linux (untested):
-
-```
-sudo yum install PyQt4
-```
-
-If you failed to install PyQt4, please follow this [guild](http://pyqt.sourceforge.net/Docs/PyQt4/installation.html) to install it.
-
-## 2.3 Getting Started
-
-The latest PyHLA is available [here](https://github.com/felixfan/PyHLA/archive/v1.1.1.tar.gz).
-
-or, you can clone this repository via the command
+## 2.1 Clone the repository
 
 ```
 git clone https://github.com/felixfan/PyHLA.git
+cd PyHLA
 ```
 
-Once you have downloaded PyHLA, typing
+## 2.2 Install required packages
 
 ```
-$ python PyHLA.py -h
+pip install -r requirements.txt
 ```
 
-will print a list of all command-line options.
-
-or, typing the following command to start the GUI.
+## 2.3 Getting Started
 
 ```
-python gPyHLA.py
+python PyHLA.py -h
 ```
 
 # 3. Tutorials
@@ -204,6 +152,7 @@ Header line is **NOT** needed. For example, here are two individuals typed for 6
 0001 2 A*02:07:01 A*11:01:01 B*51:01:01 B*51:01:01 C*14:02:01 C*14:02:01 DQA1*01:04:01 DQA1*01:04:01 DQB1*03:03:02 DQB1*05:02:01 DRB1*07:01:01 DRB1*14:54:01
 0002 1 A*24:02:01 A*33:03:01 B*15:25:01 B*58:01:01 C*03:02:02 C*04:03 NA NA DQB1*03:01:01 DQB1*03:01:01 DRB1*03:01:01 DRB1*12:02:01
 ```
+
 There are one case and one control. The six genes are: `HLA-A`, `HLA-B`, `HLA-C`, `HLA-DQA1`, `HLA-DQB1` and `HLA-DRB1`. Each gene has two columns. Individual `0002` does not have HLA types for `HLA-DQA1` (two NA). All alleles have six digits resolution except that one allele of `HLA-C` of individual 0002 only has four digits resolution. It is fine if we only want to test association at two or four digits resolution.
 
 **Note:** The allele names in the above example do not have the HLA prefix. Allele names have the HLA prefix can also be used as input. e.g. `A*02:07:01 A*11:01:01` is the same as `HLA-A*02:07:01 HLA-A*11:01:01`. See the example file `input0.txt` and `input1.txt` for case-control trait and quantitative trait, respectively.
@@ -358,6 +307,7 @@ fisher      Fisher's exact test (For disease traits, 2 x 2 coningency table)
 logistic    logistic regression (For disease traits)
 linear      linear regression (For quantitative traits)
 ```
+
 Default value is fisher.
 
 #### 3.3.1.5 Genetic model to test (`--model`)
@@ -497,12 +447,14 @@ PermNA        Number of permutation with NA statistic
 ##### 3.3.2.2.1 Fisher's exact test and Pearson's chi-squared test
 
 Fisher's exact test is the default option.
+
 ```
 python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR
 python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --perm 10000
 ```
 
 Pearson's chi-squared test
+
 ```
 python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test chisq
 python PyHLA.py --input example/input0.txt --assoc --digit 4 --freq 0.05 --adjust FDR --test chisq --model dom
@@ -619,20 +571,21 @@ python PyHLA.py --input example/input0.txt --assoc-AA --consensus
 ```
 
 By default, Fisher's exact test was used. Each `ID` contains three parts: gene, position and residue. `A_case` and  `B_case` are the number of cases carry and do not carry the residue at this position, respectively. `A_ctrl` and `B_ctrl` are the number of controls carry and do not carry the residue at this position, respectively. `P` denotes the p value of the test. `OR` is the odds ratio calculated with Haldane's correction of Woolf's method. `ACR` lists the alleles where the residue is present.
+
 ```
 ID                    A_case  B_case  A_ctrl  B_ctrl         P      OR  ACR
-A_9_F                    566     592     399     443   0.52589    1.06	A*01:01,A*01:22N,A*01:81,A*02:01,A*02:03,A*02:07,A*02:112,A*02:264,A*02:265,A*02:43N,A*03:01,A*32:01,A*34:08,A*36:01
-A_9_S                    403     755     291     551   0.92425    1.01	A*23:01,A*24:02,A*24:03,A*24:07,A*24:20,A*24:59,A*30:01,A*30:04
-A_9_T                    364     794     251     591   0.46171    1.08	A*29:01,A*31:01,A*33:03
+A_9_F                    566     592     399     443   0.52589    1.06    A*01:01,A*01:22N,A*01:81,A*02:01,A*02:03,A*02:07,A*02:112,A*02:264,A*02:265,A*02:43N,A*03:01,A*32:01,A*34:08,A*36:01
+A_9_S                    403     755     291     551   0.92425    1.01    A*23:01,A*24:02,A*24:03,A*24:07,A*24:20,A*24:59,A*30:01,A*30:04
+A_9_T                    364     794     251     591   0.46171    1.08    A*29:01,A*31:01,A*33:03
 ...
 
-DRB1_13_C                 19    1139       4     838   0.01809    3.19	DRB1*12:20
-DRB1_13_F                342     816     244     598   0.80365    1.03	DRB1*01:01,DRB1*01:02,DRB1*09:01,DRB1*09:05,DRB1*09:06,DRB1*09:09,DRB1*09:12,DRB1*09:15,DRB1*09:16,DRB1*10:01
-DRB1_13_G                438     720     327     515   0.67497    0.96	DRB1*08:02,DRB1*08:03,DRB1*08:09,DRB1*08:18,DRB1*12:01,DRB1*12:02,DRB1*12:15,DRB1*12:17,DRB1*12:18,DRB1*12:19,DRB1*12:21,DRB1*12:31N,DRB1*14:04
-DRB1_13_H                276     882     194     648   0.70858    1.04	DRB1*04:01,DRB1*04:03,DRB1*04:04,DRB1*04:05,DRB1*04:06,DRB1*04:08,DRB1*04:10,DRB1*04:23,DRB1*04:71
-DRB1_13_R                378     780     258     584   0.35570    1.10	DRB1*15:01,DRB1*15:02,DRB1*15:30,DRB1*15:58,DRB1*16:01,DRB1*16:02
-DRB1_13_S                510     648     388     454   0.38704    0.92	DRB1*03:01,DRB1*04:66,DRB1*11:01,DRB1*11:04,DRB1*11:06,DRB1*11:54,DRB1*13:01,DRB1*13:02,DRB1*13:12,DRB1*13:13,DRB1*13:19,DRB1*13:47,DRB1*14:03,DRB1*14:05,DRB1*14:54
-DRB1_13_Y                 97    1061      75     767   0.68689    0.93	DRB1*07:01,DRB1*09:07
+DRB1_13_C                 19    1139       4     838   0.01809    3.19    DRB1*12:20
+DRB1_13_F                342     816     244     598   0.80365    1.03    DRB1*01:01,DRB1*01:02,DRB1*09:01,DRB1*09:05,DRB1*09:06,DRB1*09:09,DRB1*09:12,DRB1*09:15,DRB1*09:16,DRB1*10:01
+DRB1_13_G                438     720     327     515   0.67497    0.96    DRB1*08:02,DRB1*08:03,DRB1*08:09,DRB1*08:18,DRB1*12:01,DRB1*12:02,DRB1*12:15,DRB1*12:17,DRB1*12:18,DRB1*12:19,DRB1*12:21,DRB1*12:31N,DRB1*14:04
+DRB1_13_H                276     882     194     648   0.70858    1.04    DRB1*04:01,DRB1*04:03,DRB1*04:04,DRB1*04:05,DRB1*04:06,DRB1*04:08,DRB1*04:10,DRB1*04:23,DRB1*04:71
+DRB1_13_R                378     780     258     584   0.35570    1.10    DRB1*15:01,DRB1*15:02,DRB1*15:30,DRB1*15:58,DRB1*16:01,DRB1*16:02
+DRB1_13_S                510     648     388     454   0.38704    0.92    DRB1*03:01,DRB1*04:66,DRB1*11:01,DRB1*11:04,DRB1*11:06,DRB1*11:54,DRB1*13:01,DRB1*13:02,DRB1*13:12,DRB1*13:13,DRB1*13:19,DRB1*13:47,DRB1*14:03,DRB1*14:05,DRB1*14:54
+DRB1_13_Y                 97    1061      75     767   0.68689    0.93    DRB1*07:01,DRB1*09:07
 ...
 ```
 
@@ -828,27 +781,27 @@ When an allele or residual was associated (p < 0.05) with the disease, tests for
 
 Table 1 Number of individuals with/without (+/-) factor A and/or factor B.
 
-|Factor A|Factor B |Number of Cases|Number of Controls|
-|--------|---------|---------------|------------------|
-|+       |+        |x1             |y1                |
-|+       |-        |x2             |y2                |
-|-       |+        |x3             |y3                |
-|-       |-        |x4             |y4                |
+| Factor A | Factor B | Number of Cases | Number of Controls |
+| -------- | -------- | --------------- | ------------------ |
+| +        | +        | x1              | y1                 |
+| +        | -        | x2              | y2                 |
+| -        | +        | x3              | y3                 |
+| -        | -        | x4              | y4                 |
 
 Table 2 Summary of the ten tests (2x2 Tables)
 
-|Comparison                      |a       |b      |c     |d     |Test [Number]              |
-|--------------------------------|--------|-------|------|------|---------------------------|
-|A vs. non-A                     |x1+x2   |x3+x4  |y1+y2 |y3+y4 |[1] A associated?          |
-|B vs. non-B                     |x1+x3   |x2+x4  |y1+y3 |y2+y4 |[2] B associated?          |
-|++ vs. -+                       |x1      |x3     |y1    |y3    |[3] A associated in B-positives? |
-|+- vs. --                       |x2      |x4     |y2    |y4    |[4] A associated in B-negatives? |
-|++ vs. +-                       |x1      |x2     |y1    |y2    |[5] B associated in A-positives? |
-|-+ vs. --                       |x3      |x4     |y3    |y4    |[6] B associated in A-negatives? |
-|+- vs. -+                |x2      |x3     |y2    |y3  |[7] Difference between A and B association?|
-|++ vs. --                       |x1      |x4     |y1    |y4    |[8] Combined A-B association?     |
-|Association A and B in Cases    |x1      |x2     |x3    |x4    |[9] Linkage disequilibrium in cases|
-|Association A and B in Controls |y1      |y2     |y3    |y4    |[10] Linkage disequilibrium in controls|
+| Comparison                      | a     | b     | c     | d     | Test [Number]                               |
+| ------------------------------- | ----- | ----- | ----- | ----- | ------------------------------------------- |
+| A vs. non-A                     | x1+x2 | x3+x4 | y1+y2 | y3+y4 | [1] A associated?                           |
+| B vs. non-B                     | x1+x3 | x2+x4 | y1+y3 | y2+y4 | [2] B associated?                           |
+| ++ vs. -+                       | x1    | x3    | y1    | y3    | [3] A associated in B-positives?            |
+| +- vs. --                       | x2    | x4    | y2    | y4    | [4] A associated in B-negatives?            |
+| ++ vs. +-                       | x1    | x2    | y1    | y2    | [5] B associated in A-positives?            |
+| -+ vs. --                       | x3    | x4    | y3    | y4    | [6] B associated in A-negatives?            |
+| +- vs. -+                       | x2    | x3    | y2    | y3    | [7] Difference between A and B association? |
+| ++ vs. --                       | x1    | x4    | y1    | y4    | [8] Combined A-B association?               |
+| Association A and B in Cases    | x1    | x2    | x3    | x4    | [9] Linkage disequilibrium in cases         |
+| Association A and B in Controls | y1    | y2    | y3    | y4    | [10] Linkage disequilibrium in controls     |
 
 ```
 Both test 3 and test 4 are significant: A is associated with the disease independently of B.
@@ -976,12 +929,12 @@ Yanhui Fan, You-Qiang Song. (2016) PyHLA: tests for association between HLA alle
 
 # 6. References
 
--	Sham PC, Curtis D: Monte Carlo tests for associations between disease and alleles at highly polymorphic loci. Ann Hum Genet 1995, 59:97-105.
+- Sham PC, Curtis D: Monte Carlo tests for associations between disease and alleles at highly polymorphic loci. Ann Hum Genet 1995, 59:97-105.
 
--	Lancaster AK, Single RM, Solberg OD, Nelson MP, Thomson G: PyPop update – a software pipeline for large-scale multilocus population genomics. Tissue Antigens 2007, 69:192-197.
+- Lancaster AK, Single RM, Solberg OD, Nelson MP, Thomson G: PyPop update – a software pipeline for large-scale multilocus population genomics. Tissue Antigens 2007, 69:192-197.
 
--	Kanterakis S, Magira E, Rosenman KD, Rossman M, Talsania K, Monos DS: SKDM human leukocyte antigen (HLA) tool: A comprehensive HLA and disease associations analysis software. Human Immunology 2008, 69(8):522-525.
+- Kanterakis S, Magira E, Rosenman KD, Rossman M, Talsania K, Monos DS: SKDM human leukocyte antigen (HLA) tool: A comprehensive HLA and disease associations analysis software. Human Immunology 2008, 69(8):522-525.
 
--	El Galta R, Hsu L, Houwing-Duistermaat JJ: Methods to test for association between a disease and a multi-allelic marker applied to a candidate region. BMC Genetics 2005, 6:S101-S101.
+- El Galta R, Hsu L, Houwing-Duistermaat JJ: Methods to test for association between a disease and a multi-allelic marker applied to a candidate region. BMC Genetics 2005, 6:S101-S101.
 
--	Svejgaard A, Ryder LP: HLA and disease associations: Detecting the strongest association. Tissue Antigens 1994, 43(1):18-27.
+- Svejgaard A, Ryder LP: HLA and disease associations: Detecting the strongest association. Tissue Antigens 1994, 43(1):18-27.
