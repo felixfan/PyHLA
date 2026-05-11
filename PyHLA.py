@@ -1123,9 +1123,13 @@ def assocADRChiFisher(infile, digit, freq, test='chisq', model = 'allelic', adju
                     if test == "chisq":
                         chi2, p, dof, expected = scipy.stats.chi2_contingency(data)
                     OR, pvalue = scipy.stats.fisher_exact(data)
-                    se = math.sqrt(1.0/n1  + 1.0/n2 +  1.0/n3 + 1.0/n4)
-                    l95 = math.exp(math.log(OR) - 1.96 * se)
-                    u95 = math.exp(math.log(OR) + 1.96 * se)
+                    try:
+                        se = math.sqrt(1.0/n1  + 1.0/n2 +  1.0/n3 + 1.0/n4)
+                        l95 = math.exp(math.log(OR) - 1.96 * se)
+                        u95 = math.exp(math.log(OR) + 1.96 * se)
+                    except ZeroDivisionError:
+                        l95 = float('nan')
+                        u95 = float('nan')
                     ss = []
                     ss.append(n1)
                     ss.append(n2)
